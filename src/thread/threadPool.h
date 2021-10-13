@@ -18,7 +18,7 @@ private:
     condition_variable noTaskCv;
     mutex noTaskCvMutex;
     int maxCore;
-    Mutex<bool> killed;
+    bool killed;
 
     ThreadPool();
 
@@ -118,6 +118,7 @@ void ThreadPool::init(int core) {
 }
 
 void ThreadPool::submit(Job *job) {
+    if (killed) return;
     enqueue.run([&](queue<Job *> &q) {
         q.push(job);
         noTaskCv.notify_one();
@@ -129,6 +130,7 @@ int ThreadPool::getAccumulation() {
 }
 
 void ThreadPool::updateCore(int newCount) {
+    if (killed) return;
     needKill.run([&](int &cleaned) {
         if (newCount > this->maxCore)
             for (int i = this->maxCore; i < newCount; ++i)
@@ -141,15 +143,15 @@ void ThreadPool::updateCore(int newCount) {
 }
 
 void ThreadPool::wait() {
-    killed.set(true);
     updateCore(0);
+    killed = true;
     map<pthread_t, thread *> tmp = threadPool.get();
     for (auto &item: tmp)
         item.second->join();
 }
 
 void ThreadPool::close() {
-    killed.set(true);
+    killed = true;
     map<pthread_t, thread *> tmp = threadPool.get();
     for (auto &item: tmp) {
         pthread_kill(item.first, SIGKILL);

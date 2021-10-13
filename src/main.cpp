@@ -1,8 +1,8 @@
-#include "util/logger.h"
 #include "thread/threadPool.h"
 
 int main() {
     Logger::init();
+    ThreadPool::ctx()->init(10);
 
     ThreadPool *pool = ThreadPool::ctx();
     for (int i = 0; i < 100; ++i) {
@@ -12,7 +12,6 @@ int main() {
         pool->submit(job);
     }
 
-    ThreadPool::ctx()->init(10);
     ThreadPool::ctx()->wait();
     ThreadPool::ctx()->close();
     Logger::debug("%", ThreadPool::ctx()->getAccumulation());
