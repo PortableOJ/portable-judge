@@ -6,13 +6,14 @@
 #define JUDGE_LOGGER_H
 
 #include "include.h"
-#include "thread.h"
+#include "mutex.h"
 
 class Logger {
 private:
     ofstream out;
     char timeStr[20];
     static Logger *logger;
+    Mutex<bool> lock;
 
     Logger();
 
@@ -32,7 +33,7 @@ public:
 
     static void close();
 
-    static char* timer();
+    static char *timer();
 
     template<class ...Args>
     static void err(const string &msg, const Args &...args);
@@ -50,7 +51,9 @@ public:
     static void trace(const string &msg, const Args &...args);
 };
 
-Logger * Logger::logger = nullptr;
+/// region define
+
+Logger *Logger::logger = nullptr;
 
 Logger::Logger() : out("judge.log"), timeStr() {}
 
@@ -87,20 +90,18 @@ void Logger::print(const string &msg, int offset, const T &t, const Args &... ar
 
 template<class... Args>
 void Logger::print(const string &level, const string &msg, const Args &... args) {
-    char *format = new char[50];
-    const char *name = nullptr;
-    Thread *thread = Thread::ctx();
-    if (thread == nullptr) name = "main";
-    else name = thread->getName().data();
-    sprintf(format,
-            "%s %6s [%30s] : ",
-            timer(),
-            level.data(),
-            name
-    );
-    Logger::out << format;
-    delete[] format;
-    print(msg, 0, args...);
+    lock.run([&](bool &) {
+        char *format = new char[50];
+        sprintf(format,
+                "%s %6s [%20lu] : ",
+                timer(),
+                level.data(),
+                pthread_self()
+        );
+        Logger::out << format;
+        delete[] format;
+        print(msg, 0, args...);
+    });
 }
 
 void Logger::init() {
@@ -109,6 +110,8 @@ void Logger::init() {
 
 void Logger::close() {
     if (logger == nullptr) return;
+    logger->out.flush();
+    logger->out.close();
     delete logger;
     logger = nullptr;
 }
@@ -151,5 +154,7 @@ template<class... Args>
 void Logger::trace(const string &msg, const Args &... args) {
     Logger::logger->print("TRACE", msg, args...);
 }
+
+/// endregion
 
 #endif //JUDGE_LOGGER_H

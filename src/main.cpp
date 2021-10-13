@@ -1,13 +1,20 @@
 #include "util/logger.h"
-#include "util/process.h"
-#include "util/thread.h"
+#include "thread/threadPool.h"
 
 int main() {
     Logger::init();
-    Thread::init();
 
-    Logger::info("test % test", 123);
+    ThreadPool *pool = ThreadPool::ctx();
+    for (int i = 0; i < 100; ++i) {
+        Job *job = new Job((void *) i, [](void *data) {
+            Logger::info("%", (long) data);
+        });
+        pool->submit(job);
+    }
 
-    Thread::close();
+    ThreadPool::ctx()->init(10);
+    ThreadPool::ctx()->wait();
+    ThreadPool::ctx()->close();
+    Logger::debug("%", ThreadPool::ctx()->getAccumulation());
     Logger::close();
 }

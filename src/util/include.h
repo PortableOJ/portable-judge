@@ -21,15 +21,8 @@
 
 #include <bits/stdc++.h>
 
-using std::function;
-using std::vector;
-using std::set;
-using std::map;
-using std::unordered_map;
-using std::pair;
-using std::string;
-using std::ofstream;
-using std::endl;
-using std::setw;
+using namespace std;
+
+const string coreThreadPoolSize = "thread.core.size";
 
 #endif //JUDGE_INCLUDE_H
