@@ -10,7 +10,6 @@
 
 class ThreadPool {
 private:
-    static ThreadPool *localThread;
     Mutex<map<pthread_t, thread *>> threadPool;
     Mutex<queue<Job *>> enqueue;
     Mutex<vector<thread *>> deathThread;
@@ -20,19 +19,14 @@ private:
     int maxCore;
     bool killed;
 
-    ThreadPool();
-
     Job *takeJob();
 
     virtual void addThread();
 
-    static void clean();
+    void clean();
 
 public:
-
-    static ThreadPool *ctx();
-
-    void init(int core);
+    explicit ThreadPool(int core);
 
     void submit(Job *job);
 
@@ -47,9 +41,9 @@ public:
 
 /// region define
 
-ThreadPool *ThreadPool::localThread = nullptr;
-
-ThreadPool::ThreadPool() : maxCore(0) {}
+ThreadPool::ThreadPool(int core) : maxCore(core), killed(false), needKill(0) {
+    for (int i = 0; i < core; ++i) addThread();
+}
 
 Job *ThreadPool::takeJob() {
     Job *cur = nullptr;
@@ -98,23 +92,10 @@ void ThreadPool::addThread() {
 }
 
 void ThreadPool::clean() {
-    if (localThread->deathThread.get().empty()) return;
-    localThread->deathThread.run([&](vector<thread *> &data) {
+    if (deathThread.get().empty()) return;
+    deathThread.run([&](vector<thread *> &data) {
         for (auto &item: data) delete item;
     });
-}
-
-ThreadPool *ThreadPool::ctx() {
-    if (localThread == nullptr)
-        localThread = new ThreadPool();
-    return localThread;
-}
-
-void ThreadPool::init(int core) {
-    needKill.set(0);
-    this->maxCore = core;
-    for (int i = 0; i < core; ++i)
-        addThread();
 }
 
 void ThreadPool::submit(Job *job) {

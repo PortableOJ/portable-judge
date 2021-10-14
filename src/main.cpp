@@ -1,19 +1,37 @@
 #include "thread/threadPool.h"
 
 int main() {
-    Logger::init();
-    ThreadPool::ctx()->init(10);
+    /// region logger
 
-    ThreadPool *pool = ThreadPool::ctx();
-    for (int i = 0; i < 100; ++i) {
+    Logger::init();
+
+    /// region env
+
+    Env::init(constant.envFileName);
+    Env *env = Env::ctx();
+
+    /// region thread pool
+
+    auto *pool = new ThreadPool(env->getInt(constant.maxThreadCore));
+    env->set(constant.workThreadPool, pool);
+
+    for (long i = 0; i < 100; ++i) {
         Job *job = new Job((void *) i, [](void *data) {
             Logger::info("%", (long) data);
         });
         pool->submit(job);
     }
 
-    ThreadPool::ctx()->wait();
-    ThreadPool::ctx()->close();
-    Logger::debug("%", ThreadPool::ctx()->getAccumulation());
+    pool->wait();
+    delete pool;
+
+    /// endregion
+
+    Env::close();
+
+    /// endregion
+
     Logger::close();
+
+    /// endregion
 }

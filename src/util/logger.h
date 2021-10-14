@@ -91,7 +91,7 @@ void Logger::print(const string &msg, int offset, const T &t, const Args &... ar
 template<class... Args>
 void Logger::print(const string &level, const string &msg, const Args &... args) {
     lock.run([&](bool &) {
-        char *format = new char[50];
+        char *format = new char[100];
         sprintf(format,
                 "%s %6s [%20lu] : ",
                 timer(),

@@ -7,19 +7,16 @@
 
 class Job {
     void *data;
-    function<void(void *data)> func;
+    function<void(void *data)> func{};
 public:
-    Job(void *data, function<void(void *data)> func);
+    Job(void *data, function<void(void *data)> &&func);
 
     void exec();
 };
 
 /// region define
 
-Job::Job(void *data, function<void(void *)> func) {
-    this->data = data;
-    this->func = move(func);
-}
+Job::Job(void *data, function<void(void *)> &&func) : data(data), func(move(func)) {}
 
 void Job::exec() {
     func(data);
