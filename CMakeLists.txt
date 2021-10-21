@@ -5,14 +5,18 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(main src/main.cpp
 
-        src/util/include.h
+        src/env/env.h
 
-        src/thread/threadPool.h
+        src/socket/callback.h
+        src/socket/request.h
+        src/socket/session.h
+
         src/thread/job.h
+        src/thread/threadPool.h
 
         src/util/__init__.h
+        src/util/include.h
         src/util/logger.h
-        src/util/env.h
         src/util/mutex.h
         )
 

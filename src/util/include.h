@@ -19,10 +19,16 @@
 #include <set>
 #include <string>
 
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <netdb.h>
+
 #include <bits/stdc++.h>
 
 using namespace std;
-
-const string coreThreadPoolSize = "thread.core.size";
 
 #endif //JUDGE_INCLUDE_H

@@ -5,7 +5,6 @@
 #ifndef JUDGE___INIT___H
 #define JUDGE___INIT___H
 
-#include "env.h"
 #include "include.h"
 #include "logger.h"
 #include "mutex.h"
