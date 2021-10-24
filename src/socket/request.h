@@ -6,10 +6,13 @@
 #define JUDGE_REQUEST_H
 
 #include "../util/__init__.h"
+#include "../env/__init__.h"
 
 namespace Api {
     const char *Register = "REGISTER";
+    const char *Append = "APPEND";
     const char *Heartbeat = "HEARTBEAT";
+    const char *Close = "CLOSE";
 }
 
 class Request {
@@ -17,10 +20,12 @@ private:
     const char *method;
     map<string, string> data;
 
-public:
+protected:
     explicit Request(const char *m);
 
     void set(const string &key, const string &value);
+
+public:
 
     void send(int socketId);
 };
@@ -44,16 +49,20 @@ void Request::send(int socketId) {
     for (auto &item : data) {
         write(socketId, item.first.c_str(), item.first.length());
         write(socketId, " ", 1);
-        write(socketId, item.first.c_str(), item.first.length());
+        write(socketId, item.second.c_str(), item.second.length());
         write(socketId, "\n", 1);
     }
-    write(socketId, "0\nEND\n", 6);
+    if (!data.empty()) {
+        write(socketId, "0\n", 2);
+    }
+    write(socketId, "END\n", 4);
 }
 
 /**
  * REQUEST Format
  *
  * BEGIN
+ * ${METHOD}
  * ${len}
  * abc
  * ${len}

@@ -21,26 +21,23 @@ class Session {
 public:
     Session(string host, int port);
 
-    void send(Request &request, Callback &callback) const;
+    void send(Request *request, Callback *callback) const;
 
-    void close();
+    void close() const;
 };
-
 
 /// region define
 
 void Session::init() {
-#ifdef HOST_MODE
-    hostent *net = gethostbyname(host.c_str());
-    sockAddr.sin_family = AF_INET;
-    sockAddr.sin_addr = *(struct in_addr *) net->h_addr_list[0];
-    sockAddr.sin_port = htons(port);
-#else
     if (inet_pton(AF_INET, host.c_str(), &sockAddr.sin_addr) > 0) {
         sockAddr.sin_family = AF_INET;
         sockAddr.sin_port = htons(port);
+    } else {
+        hostent *net = gethostbyname(host.c_str());
+        sockAddr.sin_family = AF_INET;
+        sockAddr.sin_addr = *(struct in_addr *) net->h_addr_list[0];
+        sockAddr.sin_port = htons(port);
     }
-#endif
     socketId = socket(sockAddr.sin_family, SOCK_STREAM, 0);
     if (socketId < 0) {
         Logger::err("Socket create fail");
@@ -57,12 +54,12 @@ Session::Session(string host, int port)
     init();
 }
 
-void Session::send(Request &request, Callback &callback) const {
-    request.send(socketId);
-    callback.exec(socketId);
+void Session::send(Request *request, Callback *callback) const {
+    request->send(socketId);
+    callback->exec(socketId);
 }
 
-void Session::close() {
+void Session::close() const {
     shutdown(socketId, SHUT_WR);
 }
 

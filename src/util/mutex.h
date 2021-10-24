@@ -19,7 +19,7 @@ public:
         func(data);
     }
 
-    const T &get() {
+    const T &get() const {
         return data;
     }
 

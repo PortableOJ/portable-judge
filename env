@@ -1,2 +1,6 @@
-maxThreadCore=10
+initThreadCore=10
 localStorage=true
+initSocketCore=1
+serverUrl=10.21.234.123
+serverPort=10000
+serverCode=abc

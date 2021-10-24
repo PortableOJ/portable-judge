@@ -81,6 +81,7 @@ Callback::Callback(const string &fileName)
 bool Callback::exec(int sid) {
     this->socketId = sid;
     buffer = new char[bufferSize];
+    memset(buffer, 0, sizeof(char) * bufferSize);
     if (filePath == nullptr) {
         stringstream ss;
         reduceStream(ss);
@@ -90,6 +91,7 @@ bool Callback::exec(int sid) {
         writeToFile();
         delete[] buffer;
     }
+    return true;
 }
 
 // endregion

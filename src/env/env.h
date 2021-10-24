@@ -30,6 +30,7 @@ class Env {
 
     static vector<string *> *needFree;
     static Env *localThread;
+
     static Node getType(const string &value);
 
 public:
@@ -114,8 +115,8 @@ Env *Env::ctx() {
 }
 
 void Env::init(const string &file) {
-    localThread = new Env(file);
     needFree = new vector<string *>();
+    localThread = new Env(file);
 }
 
 Env::Env(const string &file) {
@@ -178,7 +179,25 @@ void Env::close() {
 
 struct Constant {
     const string envFileName = "env";
-    const string maxThreadCore = "maxThreadCore";
+
+    /// region env
+    const string initThreadCore = "initThreadCore";
+    const string initSocketCore = "initSocketCore";
+    const string serverUrl = "serverUrl";
+    const string serverPort = "serverPort";
+    const string serverCode = "serverCode";
+
+
+    /// endregion
+
+    /// region static
+
     const string workThreadPool = "workThreadPool";
+    const string workSocketPool = "workSocketPool";
+    const string judgeCode = "judgeCode";
+
+    /// endregion
+
 } constant; // NOLINT
+
 #endif //JUDGE_ENV_H

@@ -1,6 +1,5 @@
-#include "thread/threadPool.h"
-#include "socket/session.h"
-#include "env/env.h"
+#include "thread/__init__.h"
+#include "socket/__init__.h"
 
 int main() {
     /// region logger
@@ -14,20 +13,54 @@ int main() {
 
     /// region thread pool
 
-    auto *pool = new ThreadPool(env->getInt(constant.maxThreadCore));
+    auto *pool = new ThreadPool(env->getInt(constant.initThreadCore));
+    pool->init();
     env->set(constant.workThreadPool, pool);
 
-//    Session session("localhost", 10000);
-    Session session("10.21.234.123", 10000);
-    Request request(Api::Register);
-    Callback callback(nullptr, [&](void *, stringstream &ss) {
-        string s;
-        ss >> s;
-        Logger::info("%s", s.c_str());
-    });
+    /// region session pool
 
-    session.send(request, callback);
-    session.close();
+    string code = "MyCode";
+    env->set(constant.judgeCode, &code);
+    auto *socketPool = new SessionPool(env->getInt(constant.initSocketCore));
+    socketPool->init();
+    env->set(constant.workSocketPool, socketPool);
+
+    /// region work
+
+    CountMutex cm(100);
+
+    for (long i = 0; i < 100; ++i) {
+        Job *job = new Task((void *) i, [](void *data) {
+            Logger::info("%", (long) data);
+        }, &cm);
+        pool->submit(job);
+    }
+
+    cm.wait();
+
+    cm.reset(2);
+
+    RegisterRequest registerRequest;
+    AppendRequest appendRequest;
+    Callback callback(nullptr, [&](void *, stringstream &ss) {
+        string ans;
+        getline(ss, ans);
+        Logger::trace("%", ans);
+    });
+    Job *job1 = new SocketWork(&registerRequest, &callback, &cm);
+    Job *job2 = new SocketWork(&appendRequest, &callback, &cm);
+    socketPool->submit(job1);
+    socketPool->submit(job2);
+
+    cm.wait();
+
+    /// endregion
+
+    socketPool->wait();
+    delete socketPool;
+
+    /// endregion
+
 
     pool->wait();
     delete pool;
@@ -41,38 +74,4 @@ int main() {
     Logger::close();
 
     /// endregion
-}
-
-int tmain() {
-    sockaddr_in sockAddr{};
-
-    if (inet_pton(AF_INET, "10.21.234.123", &sockAddr.sin_addr) > 0) {
-        sockAddr.sin_family = AF_INET;
-        sockAddr.sin_port = htons(10000);
-    }
-    int socketId = socket(sockAddr.sin_family, SOCK_STREAM, 0);
-    if (socketId < 0) throw runtime_error("创建网络套接字失败");
-    if (connect(socketId, (sockaddr *) &sockAddr, sizeof(sockAddr)) < 0) throw runtime_error("网络连接失败");
-
-    thread t([&]() {
-        while (true) {
-            char buffer[1000];
-            long long n = read(socketId, buffer, 900);
-            if (n <= 0) break;
-            buffer[n] = 0;
-            cerr << "n = " << n << endl;
-            cout << buffer << endl;
-        }
-    });
-
-    while (true) {
-        string data;
-        cin >> data;
-        if (data == "END") break;
-        write(socketId, data.c_str(), data.size());
-        write(socketId, "\n", 1);
-//        shutdown(socketId, SHUT_WR);
-    }
-    pthread_kill(t.native_handle(), SIGKILL);
-    t.join();
 }

@@ -5,21 +5,32 @@
 #ifndef JUDGE_JOB_H
 #define JUDGE_JOB_H
 
+#include "../util/countMutex.h"
+
 class Job {
-    void *data;
-    function<void(void *data)> func{};
+private:
+    CountMutex *countMutex;
+
+protected:
+    explicit Job(CountMutex *cm);
+
+    virtual void work() = 0;
+
 public:
-    Job(void *data, function<void(void *data)> &&func);
+    virtual ~Job() = default;
 
     void exec();
 };
 
 /// region define
 
-Job::Job(void *data, function<void(void *)> &&func) : data(data), func(move(func)) {}
+Job::Job(CountMutex *cm) : countMutex(cm) {}
 
 void Job::exec() {
-    func(data);
+    work();
+    if (countMutex != nullptr) {
+        countMutex->trigger();
+    }
 }
 
 /// endregion

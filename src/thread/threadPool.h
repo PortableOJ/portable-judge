@@ -2,8 +2,8 @@
 // Created by keqing on 2021-10-10.
 //
 
-#ifndef JUDGE_THREADPOOL_H
-#define JUDGE_THREADPOOL_H
+#ifndef JUDGE_THREAD_POOL_H
+#define JUDGE_THREAD_POOL_H
 
 #include "../util/__init__.h"
 #include "job.h"
@@ -19,18 +19,33 @@ private:
     int maxCore;
     bool killed;
 
-    Job *takeJob();
-
-    virtual void addThread();
+    void addThread();
 
     void clean();
+
+protected:
+    Job *takeJob();
+
+    virtual function<void()> workFunc();
+
+    void killSelf();
+
+    bool sleep();
 
 public:
     explicit ThreadPool(int core);
 
+    void init();
+
+    /**
+     * 提交任务，任务会被 delete
+     * @param job 任务指针
+     */
     void submit(Job *job);
 
-    int getAccumulation();
+    [[nodiscard]] int getAccumulation() const;
+
+    [[nodiscard]] int getMaxCore() const;
 
     void updateCore(int newCount);
 
@@ -41,51 +56,8 @@ public:
 
 /// region define
 
-ThreadPool::ThreadPool(int core) : maxCore(core), killed(false), needKill(0) {
-    for (int i = 0; i < core; ++i) addThread();
-}
-
-Job *ThreadPool::takeJob() {
-    Job *cur = nullptr;
-    enqueue.run([&](queue<Job *> &q) {
-        if (q.empty()) return;
-        cur = q.front();
-        q.pop();
-    });
-    return cur;
-}
-
 void ThreadPool::addThread() {
-    auto work = [&]() {
-        while (true) {
-            Job *cur = takeJob();
-            if (cur != nullptr) {
-                cur->exec();
-                delete cur;
-            } else {
-                bool dead = false;
-                needKill.run([&](int &count) {
-                    if (count <= 0) return;
-                    dead = true;
-                    count--;
-                });
-                if (dead) break;
-
-                clean();
-                unique_lock<mutex> lk(noTaskCvMutex);
-                noTaskCv.wait(lk);
-            }
-        }
-        threadPool.run([&](map<pthread_t, thread *> &data) {
-            auto iter = data.find(pthread_self());
-            deathThread.run([&](vector<thread *> &data) {
-                data.push_back(iter->second);
-            });
-            data.erase(iter);
-        });
-    };
-
-    auto *newThread = new thread(work);
+    auto *newThread = new thread(workFunc());
     threadPool.run([&](map<pthread_t, thread *> &data) {
         data.insert({newThread->native_handle(), newThread});
     });
@@ -98,6 +70,66 @@ void ThreadPool::clean() {
     });
 }
 
+Job *ThreadPool::takeJob() {
+    Job *cur = nullptr;
+    enqueue.run([&](queue<Job *> &q) {
+        if (q.empty()) return;
+        cur = q.front();
+        q.pop();
+    });
+    return cur;
+}
+
+function<void()> ThreadPool::workFunc() {
+    Logger::trace("Normal");
+    return [&]() {
+        while (true) {
+            Job *cur = takeJob();
+            if (cur != nullptr) {
+                cur->exec();
+                delete cur;
+            } else {
+                if (sleep()) {
+                    break;
+                }
+            }
+        }
+        killSelf();
+    };
+
+}
+
+void ThreadPool::killSelf() {
+    threadPool.run([&](map<pthread_t, thread *> &data) {
+        auto iter = data.find(pthread_self());
+        deathThread.run([&](vector<thread *> &data) {
+            data.push_back(iter->second);
+        });
+        data.erase(iter);
+    });
+}
+
+bool ThreadPool::sleep() {
+    bool dead = false;
+    needKill.run([&](int &count) {
+        if (count <= 0) return;
+        dead = true;
+        count--;
+    });
+    if (dead) return true;
+
+    clean();
+    unique_lock<mutex> lk(noTaskCvMutex);
+    noTaskCv.wait(lk);
+    return false;
+}
+
+ThreadPool::ThreadPool(int core) : maxCore(core), killed(false), needKill(0) {}
+
+void ThreadPool::init() {
+    for (int i = 0; i < maxCore; ++i) addThread();
+}
+
 void ThreadPool::submit(Job *job) {
     if (killed) return;
     enqueue.run([&](queue<Job *> &q) {
@@ -106,8 +138,12 @@ void ThreadPool::submit(Job *job) {
     });
 }
 
-int ThreadPool::getAccumulation() {
+int ThreadPool::getAccumulation() const {
     return (int) enqueue.get().size();
+}
+
+int ThreadPool::getMaxCore() const {
+    return maxCore;
 }
 
 void ThreadPool::updateCore(int newCount) {
@@ -139,7 +175,6 @@ void ThreadPool::close() {
         delete item.second;
     }
 }
-
 /// endregion
 
-#endif //JUDGE_THREADPOOL_H
+#endif //JUDGE_THREAD_POOL_H
