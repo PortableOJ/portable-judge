@@ -19,16 +19,31 @@
 #include <set>
 #include <string>
 
+#include <wait.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <seccomp.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <unistd.h>
-#include <netdb.h>
-
 #include <bits/stdc++.h>
+#include <sys/resource.h>
 
 using namespace std;
+
+namespace STD {
+    const unsigned long B = 1;
+    const unsigned long KB = 1024 * B;
+    const unsigned long MB = 1024 * KB;
+    const unsigned long GB = 1024 * MB;
+
+    const int ms = 1;
+    const int s = 1000 * ms;
+    const int m = 60 * s;
+    const int h = 60 * m;
+}
 
 #endif //JUDGE_INCLUDE_H

@@ -123,6 +123,7 @@ Env::Env(const string &file) {
     ifstream in(file);
     string key, value;
     while (getline(in, key, '=') && getline(in, value)) {
+        if (key.empty()) continue;
         Node type = getType(value);
         data.insert({key, type});
     }
@@ -195,6 +196,12 @@ struct Constant {
     const string workThreadPool = "workThreadPool";
     const string workSocketPool = "workSocketPool";
     const string judgeCode = "judgeCode";
+
+    /// endregion
+
+    /// region language
+
+    const string c = "C";
 
     /// endregion
 
