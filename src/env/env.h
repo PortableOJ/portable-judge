@@ -202,6 +202,9 @@ struct Constant {
     /// region language
 
     const string c = "C";
+    const string cExtension = ".c";
+    const string cpp = "CPP";
+    const string cppExtension = ".cpp";
 
     /// endregion
 

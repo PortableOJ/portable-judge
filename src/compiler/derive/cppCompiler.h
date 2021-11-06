@@ -1,13 +1,13 @@
 //
-// Created by keqing on 2021-10-26.
+// Created by keqing on 2021-11-05.
 //
 
-#ifndef JUDGE_C_COMPILER_H
-#define JUDGE_C_COMPILER_H
+#ifndef JUDGE_CPP_COMPILER_H
+#define JUDGE_CPP_COMPILER_H
 
 #include "../compiler.h"
 
-class CCompiler : public Compiler {
+class CppCompiler : public Compiler {
 private:
 
     [[nodiscard]] static bool trace(int pid);
@@ -16,7 +16,7 @@ private:
 
 public:
 
-    CCompiler();
+    CppCompiler();
 
     [[nodiscard]] string versionSupport() const override;
 
@@ -25,14 +25,14 @@ public:
 
 /// region define
 
-bool CCompiler::trace(int pid) {
+bool CppCompiler::trace(int pid) {
     TimeoutMutex timeoutMutex;
     int exitCode;
     bool status = timeoutMutex.wait(pid, compileRealMaxTime, exitCode, nullptr);
     return status && exitCode == 0;
 }
 
-void CCompiler::toCompile(const string &workDir, const string &fileName, const string &param) {
+void CppCompiler::toCompile(const string &workDir, const string &fileName, const string &param) {
     chdir(workDir.data());
 
     rlimit timeLimit{compileMaxTime, compileMaxTime};
@@ -42,10 +42,10 @@ void CCompiler::toCompile(const string &workDir, const string &fileName, const s
     setrlimit(RLIMIT_AS, &memLimit);
     setrlimit(RLIMIT_FSIZE, &fileLimit);
 
-    string codeFile = fileName + constant.cExtension;
+    string codeFile = fileName + constant.cppExtension;
     const string &outputFile = fileName;
 
-    const char cmd[] = "/usr/bin/gcc";
+    const char cmd[] = "/usr/bin/g++";
     const char *const argv[] = {cmd, codeFile.c_str(), "-O2", "-o", outputFile.c_str(), "-Wall", "-lm",
                                 "--static", param.c_str(), "-DONLINE_JUDGE", "-fmax-errors=5", nullptr};
     const char *const env[] = {"PATH=/usr/bin", nullptr};
@@ -55,17 +55,17 @@ void CCompiler::toCompile(const string &workDir, const string &fileName, const s
     execve(cmd, const_cast<char *const *>(argv), const_cast<char *const *>(env));
 }
 
-CCompiler::CCompiler() : Compiler(constant.c) {}
+CppCompiler::CppCompiler() : Compiler(constant.cpp) {}
 
-string CCompiler::versionSupport() const {
+string CppCompiler::versionSupport() const {
     string str;
-    if (doCmd("gcc --version", str)) {
-        return string("C ") + to_string(str.length()) + "\n" + str + "\n";
+    if (doCmd("g++ --version", str)) {
+        return string("CPP ") + to_string(str.length()) + "\n" + str + "\n";
     }
     return string();
 }
 
-bool CCompiler::compile(const string &workDir, const string &fileName, const string &param) const {
+bool CppCompiler::compile(const string &workDir, const string &fileName, const string &param) const {
     int pid = fork();
     if (pid == 0) {
         toCompile(workDir, fileName, param);
@@ -77,5 +77,4 @@ bool CCompiler::compile(const string &workDir, const string &fileName, const str
 
 /// endregion
 
-
-#endif //JUDGE_C_COMPILER_H
+#endif //JUDGE_CPP_COMPILER_H
