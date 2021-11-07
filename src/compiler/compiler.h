@@ -5,8 +5,6 @@
 #ifndef JUDGE_COMPILER_H
 #define JUDGE_COMPILER_H
 
-#include <utility>
-
 #include "../thread/__init__.h"
 
 class Compiler {
@@ -30,10 +28,10 @@ public:
     [[nodiscard]] virtual bool compile(const string &workDir, const string &filePath, const string &param) const = 0;
 };
 
-unsigned long Compiler::compileMaxTime = 30000;
-unsigned long Compiler::compileRealMaxTime = 60000;
-unsigned long Compiler::compileMaxMemory = 2048;
-unsigned long Compiler::compileFileSize = 1024;
+unsigned long Compiler::compileMaxTime = 30000 / STD::s;        // s
+unsigned long Compiler::compileRealMaxTime = 60000 / STD::s;    // s
+unsigned long Compiler::compileMaxMemory = 2048 * STD::MB;      // B
+unsigned long Compiler::compileFileSize = 1024 * STD::MB;       // B
 
 bool Compiler::doCmd(const char *cmd, string &res) const {
     FILE *pipe = popen(cmd, "r");

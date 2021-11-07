@@ -8,6 +8,7 @@ add_executable(main
 
         src/compiler/__init__.h
         src/compiler/compiler.h
+        src/compiler/compilerFactory.h
 
         src/compiler/derive/cCompiler.h
         src/compiler/derive/cppCompiler.h
@@ -36,8 +37,7 @@ add_executable(main
         src/util/include.h
         src/util/logger.h
         src/util/mutex.h
-        src/util/timeoutMutex.h
-        src/compiler/compilerFactory.h)
+        src/util/timeoutMutex.h)
 
 target_link_libraries(main seccomp)
 

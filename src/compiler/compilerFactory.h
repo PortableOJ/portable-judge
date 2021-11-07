@@ -8,25 +8,24 @@
 #include "derive/cCompiler.h"
 #include "derive/cppCompiler.h"
 
-class compilerFactory {
+class CompilerFactory {
     const static Compiler *c;
     const static Compiler *cpp;
-
+public:
     const static Compiler *getCompiler(const string &str);
 };
 
 /// region define
 
 
-const Compiler *compilerFactory::c = new CCompiler();       // NOLINT
-const Compiler *compilerFactory::cpp = new CppCompiler();   // NOLINT
+const Compiler *CompilerFactory::c = new CCompiler();       // NOLINT
+const Compiler *CompilerFactory::cpp = new CppCompiler();   // NOLINT
 
-const Compiler *compilerFactory::getCompiler(const string &str) {
+const Compiler *CompilerFactory::getCompiler(const string &str) {
     if (str == constant.c) return c;
     if (str == constant.cpp) return cpp;
     return nullptr;
 }
-
 
 /// endregion
 

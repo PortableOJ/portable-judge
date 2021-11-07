@@ -14,16 +14,16 @@ class TimeoutMutex {
 public:
     TimeoutMutex();
 
-    bool wait(int pid, unsigned long ms, int &code, rusage *rus);
+    bool wait(int pid, unsigned long s, int &code, rusage *rus);
 };
 
 /// region define
 
 TimeoutMutex::TimeoutMutex() : m(), cv(), lk(m) {}
 
-bool TimeoutMutex::wait(int pid, unsigned long ms, int &code, rusage *rus) {
+bool TimeoutMutex::wait(int pid, unsigned long s, int &code, rusage *rus) {
     thread th([&]() {
-        if (cv.wait_for(lk, chrono::seconds(ms)) == cv_status::timeout) kill(pid, SIGKILL);
+        if (cv.wait_for(lk, chrono::seconds(s)) == cv_status::timeout) kill(pid, SIGKILL);
     });
 
     int status;
