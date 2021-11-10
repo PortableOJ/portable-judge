@@ -32,6 +32,8 @@ public:
 
     explicit Callback(const string &fileName);
 
+    explicit Callback(const path &fileName);
+
     bool exec(int sid);
 };
 
@@ -78,6 +80,9 @@ Callback::Callback(void *data, function<void(void *, stringstream &)> func)
 Callback::Callback(const string &fileName)
         : data(nullptr), filePath(new string(fileName)), func(nullptr), buffer(nullptr), dataLen(0), socketId(-1) {}
 
+Callback::Callback(const path &fileName)
+        : data(nullptr), filePath(new string(fileName.string())), func(nullptr), buffer(nullptr), dataLen(0), socketId(-1) {}
+
 bool Callback::exec(int sid) {
     this->socketId = sid;
     buffer = new char[bufferSize];
@@ -90,6 +95,8 @@ bool Callback::exec(int sid) {
     } else {
         writeToFile();
         delete[] buffer;
+//        delete filePath;
+//        filePath = nullptr;
     }
     return true;
 }
