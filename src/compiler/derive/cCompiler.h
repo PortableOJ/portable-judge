@@ -12,7 +12,7 @@ private:
 
     [[nodiscard]] static bool trace(int pid);
 
-    static void toCompile(const string &workDir, const string &fileName, const string &param);
+    static void toCompile(const path &code, const string &param);
 
 public:
 
@@ -20,7 +20,7 @@ public:
 
     [[nodiscard]] string versionSupport() const override;
 
-    [[nodiscard]] bool compile(const string &workDir, const string &fileName, const string &param) const override;
+    [[nodiscard]] bool compile(const path &code, const string &param) const override;
 };
 
 /// region define
@@ -32,8 +32,7 @@ bool CCompiler::trace(int pid) {
     return status && exitCode == 0;
 }
 
-void CCompiler::toCompile(const string &workDir, const string &fileName, const string &param) {
-    chdir(workDir.data());
+void CCompiler::toCompile(const path &code, const string &param) {
 
     rlimit timeLimit{compileMaxTime, compileMaxTime};
     rlimit memLimit{compileMaxMemory, compileMaxMemory};
@@ -42,15 +41,17 @@ void CCompiler::toCompile(const string &workDir, const string &fileName, const s
     setrlimit(RLIMIT_AS, &memLimit);
     setrlimit(RLIMIT_FSIZE, &fileLimit);
 
-    string codeFile = fileName + constant.cExtension;
-    const string &outputFile = fileName;
+    path output = code;
+    output.replace_extension("");
+    path compileInfo = code;
+    compileInfo.remove_filename();
+    compileInfo /= "compileError.txt";
 
     const char cmd[] = "/usr/bin/gcc";
-    const char *const argv[] = {cmd, codeFile.c_str(), "-O2", "-o", outputFile.c_str(), "-Wall", "-lm",
+    const char *const argv[] = {cmd, code.c_str(), "-O2", "-o", output.c_str(), "-Wall", "-lm",
                                 "--static", param.c_str(), "-DONLINE_JUDGE", "-fmax-errors=5", nullptr};
     const char *const env[] = {"PATH=/usr/bin", nullptr};
 
-    string compileInfo = "compileError.txt";
     freopen(compileInfo.c_str(), "w", stderr);
     execve(cmd, const_cast<char *const *>(argv), const_cast<char *const *>(env));
 }
@@ -65,10 +66,10 @@ string CCompiler::versionSupport() const {
     return string();
 }
 
-bool CCompiler::compile(const string &workDir, const string &fileName, const string &param) const {
+bool CCompiler::compile(const path &code, const string &param) const {
     int pid = fork();
     if (pid == 0) {
-        toCompile(workDir, fileName, param);
+        toCompile(code, param);
     } else {
         return trace(pid);
     }

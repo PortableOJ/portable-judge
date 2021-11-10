@@ -25,7 +25,7 @@ public:
 
     [[nodiscard]] virtual string versionSupport() const = 0;
 
-    [[nodiscard]] virtual bool compile(const string &workDir, const string &filePath, const string &param) const = 0;
+    [[nodiscard]] virtual bool compile(const path &code, const string &param) const = 0;
 };
 
 unsigned long Compiler::compileMaxTime = 30000 / STD::s;        // s

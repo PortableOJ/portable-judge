@@ -7,8 +7,9 @@
 int main() {
     Logger::init();
 
-    Compiler *compiler = CompilerFactory::getCompiler(constant.cpp);
-    compiler->compile("./src/test/")
+    const Compiler *compiler = CompilerFactory::getCompiler(constant.cpp);
+    bool res = compiler->compile("./src/test/tmp", "main", "-std=c++11");
+    Logger::info("%", res);
 
     Logger::close();
 }
