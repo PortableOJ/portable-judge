@@ -21,6 +21,8 @@ int main() {
         getline(ss, ans);
         Logger::trace("%", ans);
     });
+    CountMutex cm(100);
+
     Job *job1 = new SocketWork(&registerRequest, &callback, &cm);
     Job *job2 = new SocketWork(&appendRequest, &callback, &cm);
     socketPool->submit(job1);

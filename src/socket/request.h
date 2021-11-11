@@ -9,10 +9,18 @@
 #include "../env/__init__.h"
 
 namespace Api {
-    const char *Register = "REGISTER";
-    const char *Append = "APPEND";
-    const char *Heartbeat = "HEARTBEAT";
-    const char *Close = "CLOSE";
+    const char *Register = "Register";
+
+    const char *Append = "Append";
+    const char *Heartbeat = "Heartbeat";
+    const char *SolutionCodeRequest = "SolutionCode";
+    const char *StandardJudgeRequest = "StandardJudge";
+    const char *StandardJudgeCodeRequest = "StandardJudgeCode";
+    const char *ProblemJudgeCodeRequest = "ProblemJudgeCode";
+    const char *ProblemDataInRequest = "ProblemDataIn";
+    const char *ProblemDataOutRequest = "ProblemDataOut";
+
+    const char *Close = "Close";
 }
 
 class Request {

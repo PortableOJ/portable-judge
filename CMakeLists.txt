@@ -16,6 +16,9 @@ add_executable(main
         src/env/__init__.h
         src/env/env.h
 
+        src/file/__init__.h
+        src/file/fileManager.h
+
         src/socket/__init__.h
         src/socket/callback.h
         src/socket/request.h
@@ -25,7 +28,11 @@ add_executable(main
 
         src/socket/model/appendRequest.h
         src/socket/model/closeRequest.h
+        src/socket/model/problemJudgeCodeRequest.h
         src/socket/model/registerRequest.h
+        src/socket/model/solutionCodeRequest.h
+        src/socket/model/standardJudgeCodeRequest.h
+        src/socket/model/standardJudgeRequest.h
 
         src/thread/__init__.h
         src/thread/job.h
@@ -37,7 +44,8 @@ add_executable(main
         src/util/include.h
         src/util/logger.h
         src/util/mutex.h
-        src/util/timeoutMutex.h)
+        src/util/timeoutMutex.h
+        src/language/__init__.h src/language/language.h src/socket/model/problemDataInRequest.h src/socket/model/problemDataOutRequest.h)
 
 target_link_libraries(main seccomp)
 
