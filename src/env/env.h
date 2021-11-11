@@ -182,12 +182,22 @@ struct Constant {
     const string envFileName = "env";
 
     /// region env
+
     const string initThreadCore = "initThreadCore";
+
+    const string localStorage = "localStorage";
+    const string home = "~/portable";
+
     const string initSocketCore = "initSocketCore";
+
     const string serverUrl = "serverUrl";
     const string serverPort = "serverPort";
     const string serverCode = "serverCode";
 
+    const string compileMaxTime = "compileMaxTime";
+    const string compileRealMaxTime = "compileRealMaxTime";
+    const string compileMaxMemory = "compileMaxMemory";
+    const string compileFileSize = "compileFileSize";
 
     /// endregion
 
@@ -195,16 +205,12 @@ struct Constant {
 
     const string workThreadPool = "workThreadPool";
     const string workSocketPool = "workSocketPool";
-    const string judgeCode = "judgeCode";
+    const string judgeCode = "judgeCode";           // 本 judge 的编号
 
-    /// endregion
+    const string name = "name";                     // 名称
+    const string id = "id";                         // ID
 
-    /// region language
-
-    const string c = "C";
-    const string cExtension = ".c";
-    const string cpp = "CPP";
-    const string cppExtension = ".cpp";
+    const string useDiyJudge = "DIY";               // 使用非默认程序
 
     /// endregion
 

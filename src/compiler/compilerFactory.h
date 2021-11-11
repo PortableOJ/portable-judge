@@ -7,12 +7,13 @@
 
 #include "derive/cCompiler.h"
 #include "derive/cppCompiler.h"
+#include "../language/__init__.h"
 
 class CompilerFactory {
     const static Compiler *c;
     const static Compiler *cpp;
 public:
-    const static Compiler *getCompiler(const string &str);
+    const static Compiler *getCompiler(const Language &lang);
 };
 
 /// region define
@@ -21,9 +22,9 @@ public:
 const Compiler *CompilerFactory::c = new CCompiler();       // NOLINT
 const Compiler *CompilerFactory::cpp = new CppCompiler();   // NOLINT
 
-const Compiler *CompilerFactory::getCompiler(const string &str) {
-    if (str == constant.c) return c;
-    if (str == constant.cpp) return cpp;
+const Compiler *CompilerFactory::getCompiler(const Language &lang) {
+    if (lang.getLang() == "C") return c;
+    if (lang.getLang() == "CPP") return cpp;
     return nullptr;
 }
 

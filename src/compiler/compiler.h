@@ -9,19 +9,13 @@
 
 class Compiler {
 protected:
-    string language;
-
-    bool doCmd(const char *cmd, string &res) const;
+    static bool doCmd(const char *cmd, string &res) ;
 
 public:
     static unsigned long compileMaxTime;
     static unsigned long compileRealMaxTime;
     static unsigned long compileMaxMemory;
     static unsigned long compileFileSize;
-
-    explicit Compiler(string lan);
-
-    [[nodiscard]] const string &getLanguage() const;
 
     [[nodiscard]] virtual string versionSupport() const = 0;
 
@@ -33,7 +27,7 @@ unsigned long Compiler::compileRealMaxTime = 60000 / STD::s;    // s
 unsigned long Compiler::compileMaxMemory = 2048 * STD::MB;      // B
 unsigned long Compiler::compileFileSize = 1024 * STD::MB;       // B
 
-bool Compiler::doCmd(const char *cmd, string &res) const {
+bool Compiler::doCmd(const char *cmd, string &res) {
     FILE *pipe = popen(cmd, "r");
     if (!pipe)
         return false;
@@ -43,14 +37,9 @@ bool Compiler::doCmd(const char *cmd, string &res) const {
         res += data;
     }
     pclose(pipe);
-    res = language + ' ' + to_string(res.length()) + '\n' + res + '\n';
+    res = to_string(res.length()) + '\n' + res + '\n';
     return true;
 }
 
-Compiler::Compiler(string lan) : language(move(lan)) {}
-
-const string &Compiler::getLanguage() const {
-    return language;
-}
 
 #endif //JUDGE_COMPILER_H

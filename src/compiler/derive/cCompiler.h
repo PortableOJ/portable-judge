@@ -16,8 +16,6 @@ private:
 
 public:
 
-    CCompiler();
-
     [[nodiscard]] string versionSupport() const override;
 
     [[nodiscard]] bool compile(const path &code, const string &param) const override;
@@ -33,7 +31,6 @@ bool CCompiler::trace(int pid) {
 }
 
 void CCompiler::toCompile(const path &code, const string &param) {
-
     rlimit timeLimit{compileMaxTime, compileMaxTime};
     rlimit memLimit{compileMaxMemory, compileMaxMemory};
     rlimit fileLimit{compileFileSize, compileFileSize};
@@ -55,8 +52,6 @@ void CCompiler::toCompile(const path &code, const string &param) {
     freopen(compileInfo.c_str(), "w", stderr);
     execve(cmd, const_cast<char *const *>(argv), const_cast<char *const *>(env));
 }
-
-CCompiler::CCompiler() : Compiler(constant.c) {}
 
 string CCompiler::versionSupport() const {
     string str;
