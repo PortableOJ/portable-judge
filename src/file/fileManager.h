@@ -109,7 +109,7 @@ bool FileManager::initStandardJudge() {
             mutex.run([&](bool &data) {
                 data &= isCompilerOk;
             });
-        }, &cm);cer
+        }, &cm);
         threadPool->submit(job);
     }
 
