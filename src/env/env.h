@@ -186,7 +186,7 @@ struct Constant {
     const string initThreadCore = "initThreadCore";
 
     const string localStorage = "localStorage";
-    const string home = "~/portable";
+    const string home = "home";
 
     const string initSocketCore = "initSocketCore";
 

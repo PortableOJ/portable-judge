@@ -41,7 +41,7 @@ public:
 
 /// region define
 
-const string FileManager::defaultHome = "~/portable";               // NOLINT
+const string FileManager::defaultHome = "/portable";                 // NOLINT
 
 path FileManager::problemPath("problem");                   // NOLINT
 path FileManager::solutionPath("solution");                 // NOLINT
@@ -103,15 +103,14 @@ bool FileManager::initStandardJudge() {
     Mutex<bool> mutex(true);
 
     cm.reset(len);
-    vector<Task *> taskList(len);
     for (long i = 0; i < len; ++i) {
-        taskList[i] = new Task((void *) i, [&](void *index) {
-            bool isCompilerOk = cppCompiler->compile(standardJudgePathList[i], Judge.getParams());
+        auto job = new Task((void *) i, [&](void *index) {
+            bool isCompilerOk = cppCompiler->compile(standardJudgePathList[(long) index], Judge.getParams());
             mutex.run([&](bool &data) {
                 data &= isCompilerOk;
             });
-        }, &cm);
-        threadPool->submit(taskList[i]);
+        }, &cm);cer
+        threadPool->submit(job);
     }
 
     cm.wait();
