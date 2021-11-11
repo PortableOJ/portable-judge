@@ -13,6 +13,8 @@ class FileManager {
 private:
     const static string defaultHome;
 
+    static bool localStorage;
+
     static path problemPath;
     static path solutionPath;
     static path standardJudgePath;
@@ -37,11 +39,15 @@ public:
     static path checkTestDataIn(int problemId, const string &name);
 
     static path checkTestDataOut(int problemId, const string &name);
+
+    static void cleanProblem(int problemId);
 };
 
 /// region define
 
 const string FileManager::defaultHome = "/portable";                 // NOLINT
+
+bool FileManager::localStorage = false;
 
 path FileManager::problemPath("problem");                   // NOLINT
 path FileManager::solutionPath("solution");                 // NOLINT
@@ -139,6 +145,8 @@ bool FileManager::init(SessionPool *sp, ThreadPool *tp) {
     threadPool = tp;
     cppCompiler = CompilerFactory::getCompiler(Judge);
 
+    localStorage = Env::ctx()->getBool(constant.localStorage);
+
     return initStandardJudge();
 }
 
@@ -223,6 +231,12 @@ path FileManager::checkTestDataOut(int problemId, const string &name) {
     cm.wait();
 
     return dataOut;
+}
+
+void FileManager::cleanProblem(int problemId) {
+    if (localStorage) return;
+    path problem = problemPath / to_string(problemId);
+    remove_all(problem);
 }
 
 /// endregion
