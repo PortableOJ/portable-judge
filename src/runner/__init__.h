@@ -10,5 +10,6 @@
 
 #include "result.h"
 #include "runner.h"
+#include "runnerFactory.h"
 
 #endif //JUDGE_RUNNER_INIT_H

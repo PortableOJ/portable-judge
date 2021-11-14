@@ -55,7 +55,7 @@ function<void()> SessionPool::workFunc() {
             if (cur != nullptr) {
                 auto *socketWork = dynamic_cast<SocketWork *>(cur);
                 if (!session.send(socketWork->getRequest(), socketWork->getCallback())) {
-                    submit(cur);
+                    Logger::err("socket response fail, method: %", socketWork->getRequest()->getMethod());
                 } else {
                     cur->exec();
                     delete cur;

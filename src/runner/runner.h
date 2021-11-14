@@ -24,6 +24,7 @@ private:
     void runCode(const path &code,
                  int *input, int *output, int *error,
                  unsigned long limitTime, unsigned long limitMemory,
+                 const string &params,
                  unsigned long randomCode, bool allowOpenFile);
 
     static JudgeResultEnum trace(int pid, unsigned long randomCode, int *error, Report *report);
@@ -31,7 +32,7 @@ private:
 protected:
     virtual void addRule(const path &code, scmp_filter_ctx &ctx, function<void(int)> systemError) = 0;
 
-    virtual void exec(const path &code) = 0;
+    virtual void exec(const path &code, const string &params) = 0;
 
 public:
     JudgeResultEnum run(const path &code,
@@ -40,6 +41,7 @@ public:
                         int *error,
                         unsigned long limitTime,
                         unsigned long limitMemory,
+                        const string &params,
                         Report *report = nullptr,
                         bool allowOpenFile = false);
 };
@@ -65,6 +67,7 @@ unsigned long Runner::xOrShf96() {
 
 void Runner::runCode(const path &code, int *input, int *output, int *error,
                      unsigned long limitTime, unsigned long limitMemory,
+                     const string &params,
                      unsigned long randomCode, bool allowOpenFile) {
     if (input != nullptr) {
         if (input[0] != -1) dup2(input[0], 0);
@@ -125,7 +128,7 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
     seccomp_release(ctx);
     if (error != nullptr && error[1] != -1) write(error[1], "0\n", 2);
 
-    exec(code);
+    exec(code, params);
     ctxFail(-1);
 }
 
@@ -177,6 +180,7 @@ JudgeResultEnum Runner::trace(int pid, unsigned long randomCode, int *error, Rep
 JudgeResultEnum Runner::run(const path &code,
                             int *input, int *output, int *error,
                             unsigned long limitTime, unsigned long limitMemory,
+                            const string &params,
                             Report *report, bool allowOpenFile) {
     // 需要一个随机数，保证不为 0 即可
     unsigned long randomCode = xOrShf96() % 100000 + 1;

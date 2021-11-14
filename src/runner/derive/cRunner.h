@@ -27,8 +27,8 @@ protected:
             systemError(SCMP_SYS(execve));
     }
 
-    void exec(const path &code) override {
-        const char *const argv[] = {codeFile.c_str(), nullptr};
+    void exec(const path &code, const string &params) override {
+        const char *const argv[] = {codeFile.c_str(), params.c_str(), nullptr};
         const char *const env[] = {"PATH=/", nullptr};
         execve(codeFile.c_str(), const_cast<char *const *>(argv), const_cast<char *const *>(env));
     }

@@ -10,6 +10,8 @@
 class SolutionReportRequest : public Request {
 public:
     SolutionReportRequest(const string &type, const string &value);
+
+    void setSolutionId(id solutionId);
 };
 
 /// region define
@@ -17,6 +19,10 @@ public:
 SolutionReportRequest::SolutionReportRequest(const string &type, const string &value) : Request(Api::SolutionReportRequest) {
     this->set(constant.type, type);
     this->set(constant.value, value);
+}
+
+void SolutionReportRequest::setSolutionId(id solutionId) {
+    this->set(constant.id, to_string(solutionId));
 }
 
 /// endregion

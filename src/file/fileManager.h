@@ -89,7 +89,7 @@ bool FileManager::initStandardJudge() {
         const string &fileName = standardJudgeNameList[i];
         requestList[i] = new StandardJudgeCodeRequest(fileName);
         standardJudgePathList[i] = standardJudgePath / fileName;
-        standardJudgePathList[i] += Judge.getExtension();
+        standardJudgePathList[i] += JudgeWork.getExtension();
         callbackList[i] = new Callback(standardJudgePathList[i]);
         Job *getJudgeCode = new SocketWork(requestList[i], callbackList[i], &cm);
         sessionPool->submit(getJudgeCode);
@@ -111,7 +111,7 @@ bool FileManager::initStandardJudge() {
     cm.reset(len);
     for (long i = 0; i < len; ++i) {
         auto job = new Task((void *) i, [&](void *index) {
-            bool isCompilerOk = cppCompiler->compile(standardJudgePathList[(long) index], Judge.getParams());
+            bool isCompilerOk = cppCompiler->compile(standardJudgePathList[(long) index], JudgeWork.getParams());
             mutex.run([&](bool &data) {
                 data &= isCompilerOk;
             });
@@ -143,7 +143,7 @@ bool FileManager::init(SessionPool *sp, ThreadPool *tp) {
 
     sessionPool = sp;
     threadPool = tp;
-    cppCompiler = CompilerFactory::getCompiler(Judge);
+    cppCompiler = CompilerFactory::getCompiler(JudgeWork);
 
     localStorage = Env::ctx()->getBool(constant.localStorage);
 
@@ -182,10 +182,10 @@ path FileManager::createSolutionCode(id solutionId, const Language &language) {
 
 path FileManager::checkJudge(const string &judgeName, id problemId, bool &compileResult) {
     if (judgeName == constant.useDiyJudge) {
-        path judgePath = problemPath / to_string(problemId) / Judge.getCodeName();
+        path judgePath = problemPath / to_string(problemId) / JudgeWork.getCodeName();
         if (exists(judgePath)) return judgePath;
 
-        judgePath += Judge.getExtension();
+        judgePath += JudgeWork.getExtension();
         CountMutex cm(1);
         ProblemJudgeCodeRequest request(problemId);
         Callback callback(judgePath);
@@ -193,7 +193,7 @@ path FileManager::checkJudge(const string &judgeName, id problemId, bool &compil
         sessionPool->submit(socketWork);
         cm.wait();
 
-        compileResult = cppCompiler->compile(judgePath, Judge.getParams());
+        compileResult = cppCompiler->compile(judgePath, JudgeWork.getParams());
 
         return judgePath;
     } else {

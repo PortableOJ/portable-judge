@@ -38,6 +38,8 @@ protected:
 public:
 
     void send(int socketId);
+
+    [[nodiscard]] const char *getMethod() const;
 };
 
 /// region define
@@ -68,6 +70,10 @@ void Request::send(int socketId) {
     write(socketId, "END\n", 4);
 }
 
+const char *Request::getMethod() const {
+    return method;
+}
+
 /**
  * REQUEST Format
  *
@@ -81,6 +87,7 @@ void Request::send(int socketId) {
  * END
  *
  * RESPONSE Format
+ * ${code}
  * ${len}
  * abc
  * ${len}
