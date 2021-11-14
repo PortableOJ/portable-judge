@@ -2,31 +2,30 @@
 #include "socket/__init__.h"
 #include "compiler/__init__.h"
 #include "file/__init__.h"
+#include "runner/__init__.h"
 
 int main() {
     Logger::init();
 
-    Env::init(constant.envFileName);
-    Env *env = Env::ctx();
+    int input[2], output[2], error[2];
 
-    string code = "MyCode";
-    env->set(constant.judgeCode, &code);
+    pipe(input);
+    pipe(output);
+    pipe(error);
 
-    auto *socketPool = new SessionPool(env->getInt(constant.initSocketCore));
-    auto *workPool = new ThreadPool(env->getInt(constant.initThreadCore));
-    socketPool->init();
-    workPool->init();
+    Report report{};
 
-    FileManager fileManager;
-    cout << fileManager.init(socketPool, workPool) << endl;
+    CppRunner cppRunner;
+    JudgeResultEnum resultEnum = cppRunner.run("./src/test/tmp/main.cpp", input, output, error,
+                                               1, 100000000ul, &report, false);
 
-    socketPool->wait();
-    delete socketPool;
+    Logger::info("result: %", (int) resultEnum);
 
-    workPool->wait();
-    delete workPool;
-
-    env->close();
+    close(output[1]);
+    char buffer[100] = {0};
+    int n = read(output[0], buffer, 100);
+    buffer[n] = 0;
+    Logger::info("output: %", buffer);
 
     Logger::close();
 }

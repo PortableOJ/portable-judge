@@ -25,3 +25,6 @@ compileRealMaxTime=60000
 compileMaxMemory=2048
 = 编译后文件大小，对所有语言生效，单位：MB
 compileFileSize=1024
+===================运行相关配置=====================
+= 编译实际时长上线，对所有语言生效，单位：ms
+runningRealMaxTime=60000

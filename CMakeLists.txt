@@ -19,6 +19,13 @@ add_executable(main
         src/file/__init__.h
         src/file/fileManager.h
 
+        src/language/__init__.h
+        src/language/language.h
+
+        src/runner/__init__.h
+        src/runner/result.h
+        src/runner/runner.h
+
         src/socket/__init__.h
         src/socket/callback.h
         src/socket/request.h
@@ -28,6 +35,8 @@ add_executable(main
 
         src/socket/model/appendRequest.h
         src/socket/model/closeRequest.h
+        src/socket/model/problemDataInRequest.h
+        src/socket/model/problemDataOutRequest.h
         src/socket/model/problemJudgeCodeRequest.h
         src/socket/model/registerRequest.h
         src/socket/model/solutionCodeRequest.h
@@ -45,7 +54,7 @@ add_executable(main
         src/util/logger.h
         src/util/mutex.h
         src/util/timeoutMutex.h
-        src/language/__init__.h src/language/language.h src/socket/model/problemDataInRequest.h src/socket/model/problemDataOutRequest.h)
+        src/runner/derive/cRunner.h src/runner/derive/cppRunner.h)
 
 target_link_libraries(main seccomp)
 

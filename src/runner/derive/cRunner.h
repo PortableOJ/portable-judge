@@ -1,0 +1,34 @@
+//
+// Created by keqing on 2021-11-14.
+//
+
+#ifndef JUDGE_C_RUNNER_H
+#define JUDGE_C_RUNNER_H
+
+#include "../runner.h"
+
+class CRunner : public Runner {
+private:
+    path codeFile;
+protected:
+    void addRule(const path &code, scmp_filter_ctx &ctx, function<void(int)> systemError) override {
+        path workDir = code.parent_path();
+        codeFile = code.filename();
+        if (chroot(workDir.c_str()) == -1) {
+            systemError(SCMP_SYS(chroot));
+        }
+        chdir("/");
+        if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 1,
+                             SCMP_A0(SCMP_CMP_EQ, (scmp_datum_t) codeFile.c_str())))
+            systemError(SCMP_SYS(execve));
+
+    }
+
+    void exec(const path &code) override {
+        const char *const argv[] = {codeFile.c_str(), nullptr};
+        const char *const env[] = {"PATH=/", nullptr};
+        execve(codeFile.c_str(), const_cast<char *const *>(argv), const_cast<char *const *>(env));
+    }
+};
+
+#endif //JUDGE_C_RUNNER_H
