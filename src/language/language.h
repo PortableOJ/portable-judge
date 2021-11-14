@@ -20,8 +20,11 @@ private:
     const string extension{};
 
 public:
-    Language(const string &name, string lang, string params, const string &codeName,
-             const string &extension);
+
+    const static Language *getLanguage(const string &name);
+
+    Language(const string &name, string lang, string params, string codeName,
+             string extension);
 
     [[nodiscard]] const string &getName() const;
 
@@ -42,8 +45,14 @@ public:
 
 unordered_map<string, Language *> Language::languageMap;
 
-Language::Language(const string &name, string lang, string params, const string &codeName, const string &extension)
-                   : name(name), lang(std::move(lang)), params(std::move(params)), codeName(codeName), extension(extension) {
+const Language *Language::getLanguage(const string &name) {
+    auto iter = languageMap.find(name);
+    if (iter != languageMap.end()) return iter->second;
+    return nullptr;
+}
+
+Language::Language(const string &name, string lang, string params, string codeName, string extension)
+                   : name(name), lang(move(lang)), params(move(params)), codeName(move(codeName)), extension(move(extension)) {
     languageMap.insert({name, this});
 }
 
@@ -74,6 +83,7 @@ bool Language::operator==(const Language &rhs) const {
 bool Language::operator!=(const Language &rhs) const {
     return !(rhs == *this);
 }
+
 
 /// endregion
 

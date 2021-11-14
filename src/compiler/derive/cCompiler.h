@@ -9,7 +9,6 @@
 
 class CCompiler : public Compiler {
 private:
-
     [[nodiscard]] static bool trace(int pid);
 
     static void toCompile(const path &code, const string &param);
@@ -19,6 +18,8 @@ public:
     [[nodiscard]] string versionSupport() const override;
 
     [[nodiscard]] bool compile(const path &code, const string &param) const override;
+
+    void collectCompileInfo(const path &code, string &result) const override;
 };
 
 /// region define
@@ -41,8 +42,7 @@ void CCompiler::toCompile(const path &code, const string &param) {
     path output = code;
     output.replace_extension("");
     path compileInfo = code;
-    compileInfo.remove_filename();
-    compileInfo /= "compileError.txt";
+    compileInfo.replace_filename("compileError.txt");
 
     const char cmd[] = "/usr/bin/gcc";
     const char *const argv[] = {cmd, code.c_str(), "-O2", "-o", output.c_str(), "-Wall", "-lm",
@@ -69,6 +69,14 @@ bool CCompiler::compile(const path &code, const string &param) const {
         return trace(pid);
     }
     return false;
+}
+
+void CCompiler::collectCompileInfo(const path &code, string &result) const {
+    path compileInfo = code;
+    compileInfo.replace_filename("compileError.txt");
+    ifstream input(compileInfo);
+    string tmp;
+    while (getline(input, tmp)) result += tmp + '\n';
 }
 
 /// endregion

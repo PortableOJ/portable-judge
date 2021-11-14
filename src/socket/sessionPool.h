@@ -40,8 +40,7 @@ function<void()> SessionPool::workFunc() {
                     connectFail = true;
                 }
             });
-            session.send(&appendRequest, &callback);
-            if (connectFail) {
+            if (session.send(&appendRequest, &callback) || connectFail) {
                 killSelf();
                 return;
             }
@@ -55,9 +54,12 @@ function<void()> SessionPool::workFunc() {
             Job *cur = takeJob();
             if (cur != nullptr) {
                 auto *socketWork = dynamic_cast<SocketWork *>(cur);
-                session.send(socketWork->getRequest(), socketWork->getCallback());
-                cur->exec();
-                delete cur;
+                if (!session.send(socketWork->getRequest(), socketWork->getCallback())) {
+                    submit(cur);
+                } else {
+                    cur->exec();
+                    delete cur;
+                }
             } else {
                 if (sleep()) {
                     break;

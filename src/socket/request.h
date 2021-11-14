@@ -13,6 +13,8 @@ namespace Api {
 
     const char *Append = "Append";
     const char *Heartbeat = "Heartbeat";
+    const char *SolutionInfoRequest = "SolutionInfo";
+    const char *SolutionReportRequest = "SolutionReport";
     const char *SolutionCodeRequest = "SolutionCode";
     const char *StandardJudgeRequest = "StandardJudge";
     const char *StandardJudgeCodeRequest = "StandardJudgeCode";

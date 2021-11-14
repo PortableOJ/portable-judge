@@ -203,12 +203,12 @@ struct Constant {
 
     /// region static
 
-    const string workThreadPool = "workThreadPool";
-    const string workSocketPool = "workSocketPool";
     const string judgeCode = "judgeCode";           // 本 judge 的编号
 
     const string name = "name";                     // 名称
     const string id = "id";                         // ID
+    const string value = "value";                   // value
+    const string type = "type";                     // type
 
     const string useDiyJudge = "DIY";               // 使用非默认程序
 

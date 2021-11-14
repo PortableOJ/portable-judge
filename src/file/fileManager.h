@@ -28,19 +28,19 @@ private:
 public:
     static bool init(SessionPool *sp, ThreadPool *tp);
 
-    static void checkProblemDir(int problemId);
+    static void checkProblemDir(id problemId);
 
-    static path createSolutionDir(int solutionId);
+    static path createSolutionDir(id solutionId);
 
-    static path createSolutionCode(int solutionId, const Language &language);
+    static path createSolutionCode(id solutionId, const Language &language);
 
-    static path checkJudge(const string &judgeName, int problemId);
+    static path checkJudge(const string &judgeName, id problemId, bool &compileResult);
 
-    static path checkTestDataIn(int problemId, const string &name);
+    static path checkTestDataIn(id problemId, const string &name);
 
-    static path checkTestDataOut(int problemId, const string &name);
+    static path checkTestDataOut(id problemId, const string &name);
 
-    static void cleanProblem(int problemId);
+    static void cleanProblem(id problemId);
 };
 
 /// region define
@@ -150,14 +150,14 @@ bool FileManager::init(SessionPool *sp, ThreadPool *tp) {
     return initStandardJudge();
 }
 
-void FileManager::checkProblemDir(int problemId) {
+void FileManager::checkProblemDir(id problemId) {
     path curProblemPath = problemPath / to_string(problemId);
     if (!exists(curProblemPath)) {
         create_directories(curProblemPath);
     }
 }
 
-path FileManager::createSolutionDir(int solutionId) {
+path FileManager::createSolutionDir(id solutionId) {
     path curSolutionPath = solutionPath / to_string(solutionId);
     if (!exists(curSolutionPath)) {
         create_directories(curSolutionPath);
@@ -165,7 +165,7 @@ path FileManager::createSolutionDir(int solutionId) {
     return curSolutionPath;
 }
 
-path FileManager::createSolutionCode(int solutionId, const Language &language) {
+path FileManager::createSolutionCode(id solutionId, const Language &language) {
     path res = solutionPath / to_string(solutionId) / language.getCodeName();
     res += language.getExtension();
 
@@ -180,7 +180,7 @@ path FileManager::createSolutionCode(int solutionId, const Language &language) {
     return res;
 }
 
-path FileManager::checkJudge(const string &judgeName, int problemId) {
+path FileManager::checkJudge(const string &judgeName, id problemId, bool &compileResult) {
     if (judgeName == constant.useDiyJudge) {
         path judgePath = problemPath / to_string(problemId) / Judge.getCodeName();
         if (exists(judgePath)) return judgePath;
@@ -193,9 +193,8 @@ path FileManager::checkJudge(const string &judgeName, int problemId) {
         sessionPool->submit(socketWork);
         cm.wait();
 
-        cppCompiler->compile(judgePath, Judge.getParams());
+        compileResult = cppCompiler->compile(judgePath, Judge.getParams());
 
-        judgePath.replace_extension("");
         return judgePath;
     } else {
         path judgePath = standardJudgePath / judgeName;
@@ -203,7 +202,7 @@ path FileManager::checkJudge(const string &judgeName, int problemId) {
     }
 }
 
-path FileManager::checkTestDataIn(int problemId, const string &name) {
+path FileManager::checkTestDataIn(id problemId, const string &name) {
     path dataIn = problemPath / to_string(problemId) / name;
     dataIn += ".in";
     if (exists(dataIn)) return dataIn;
@@ -218,7 +217,7 @@ path FileManager::checkTestDataIn(int problemId, const string &name) {
     return dataIn;
 }
 
-path FileManager::checkTestDataOut(int problemId, const string &name) {
+path FileManager::checkTestDataOut(id problemId, const string &name) {
     path dataOut = problemPath / to_string(problemId) / name;
     dataOut += ".out";
     if (exists(dataOut)) return dataOut;
@@ -233,7 +232,7 @@ path FileManager::checkTestDataOut(int problemId, const string &name) {
     return dataOut;
 }
 
-void FileManager::cleanProblem(int problemId) {
+void FileManager::cleanProblem(id problemId) {
     if (localStorage) return;
     path problem = problemPath / to_string(problemId);
     remove_all(problem);

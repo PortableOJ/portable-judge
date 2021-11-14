@@ -37,6 +37,8 @@
 using namespace std;
 using namespace std::filesystem;
 
+typedef unsigned long id;
+
 namespace STD {
     const unsigned long B = 1;
     const unsigned long KB = 1024 * B;

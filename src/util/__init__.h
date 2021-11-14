@@ -10,5 +10,6 @@
 #include "logger.h"
 #include "mutex.h"
 #include "timeoutMutex.h"
+#include "util.h"
 
 #endif //JUDGE_UTIL___INIT___H

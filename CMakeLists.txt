@@ -26,6 +26,9 @@ add_executable(main
         src/runner/result.h
         src/runner/runner.h
 
+        src/runner/derive/cRunner.h
+        src/runner/derive/cppRunner.h
+
         src/socket/__init__.h
         src/socket/callback.h
         src/socket/request.h
@@ -54,7 +57,7 @@ add_executable(main
         src/util/logger.h
         src/util/mutex.h
         src/util/timeoutMutex.h
-        src/runner/derive/cRunner.h src/runner/derive/cppRunner.h)
+        src/work/judge.h src/work/output.h src/socket/model/solutionInfoRequest.h src/util/util.h src/socket/model/solutionReportRequest.h)
 
 target_link_libraries(main seccomp)
 

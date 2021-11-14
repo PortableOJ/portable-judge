@@ -21,7 +21,7 @@ class Session {
 public:
     Session(string host, int port);
 
-    void send(Request *request, Callback *callback) const;
+    bool send(Request *request, Callback *callback) const;
 
     void close() const;
 };
@@ -54,9 +54,9 @@ Session::Session(string host, int port)
     init();
 }
 
-void Session::send(Request *request, Callback *callback) const {
+bool Session::send(Request *request, Callback *callback) const {
     request->send(socketId);
-    callback->exec(socketId);
+    return callback->exec(socketId);
 }
 
 void Session::close() const {
