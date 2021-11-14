@@ -15,6 +15,7 @@ private:
     static void toCompile(const path &code, const string &param);
 
 public:
+    void collectCompileInfo(const path &code, string &result) const override;
 
     [[nodiscard]] string versionSupport() const override;
 
@@ -69,6 +70,14 @@ bool CppCompiler::compile(const path &code, const string &param) const {
         return trace(pid);
     }
     return false;
+}
+
+void CppCompiler::collectCompileInfo(const path &code, string &result) const {
+    path compileInfo = code;
+    compileInfo.replace_filename("compileError.txt");
+    ifstream input(compileInfo);
+    string tmp;
+    while (getline(input, tmp)) result += tmp + '\n';
 }
 
 /// endregion
