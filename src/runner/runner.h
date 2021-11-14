@@ -11,7 +11,7 @@
 struct Report {
     // 毫秒
     unsigned long timeCost;
-    // KB
+    // MB
     unsigned long memoryCost;
 };
 
@@ -93,6 +93,7 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
     setrlimit(RLIMIT_CPU, &timeLimit);
     setrlimit(RLIMIT_AS, &memLimit);
 
+    // strace -c ./main
     int whitelist[] = {SCMP_SYS(read), SCMP_SYS(fstat),
                        SCMP_SYS(mmap), SCMP_SYS(mprotect),
                        SCMP_SYS(munmap), SCMP_SYS(uname),
@@ -139,7 +140,7 @@ JudgeResultEnum Runner::trace(int pid, unsigned long randomCode, int *error, Rep
     if (report != nullptr) {
         report->timeCost = usage.ru_utime.tv_sec * 1000 + usage.ru_utime.tv_usec / 1000 +
                            usage.ru_stime.tv_sec * 1000 + usage.ru_stime.tv_usec / 1000;
-        report->memoryCost = usage.ru_maxrss;
+        report->memoryCost = usage.ru_maxrss / 1024;
     }
     bool systemFail;
     if (error != nullptr) {
@@ -155,7 +156,7 @@ JudgeResultEnum Runner::trace(int pid, unsigned long randomCode, int *error, Rep
     }
     if (status)
         return exitCode == 0 ? JudgeResultEnum::Accept :
-        systemFail ? JudgeResultEnum::SystemError : JudgeResultEnum::ReturnNotZero;
+               systemFail ? JudgeResultEnum::SystemError : JudgeResultEnum::ReturnNotZero;
     else {
         switch (exitCode) {
             case SIGFPE:
