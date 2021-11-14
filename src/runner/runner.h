@@ -179,7 +179,6 @@ JudgeResultEnum Runner::run(const path &code,
                             Report *report, bool allowOpenFile) {
     // 需要一个随机数，保证不为 0 即可
     unsigned long randomCode = xOrShf96() % 100000 + 1;
-    Logger::trace("randomCode: %", randomCode);
     int pid = fork();
     if (pid == 0) {
         runCode(code, input, output, error, limitTime, limitMemory, randomCode, allowOpenFile);

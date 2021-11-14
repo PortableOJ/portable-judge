@@ -12,16 +12,19 @@ private:
     path codeFile;
 protected:
     void addRule(const path &code, scmp_filter_ctx &ctx, function<void(int)> systemError) override {
-        path workDir = code.parent_path();
         codeFile = code.filename();
-        if (chroot(workDir.c_str()) == -1) {
+        codeFile.replace_extension("");
+
+        if (chroot(code.parent_path().c_str()) == -1) {
             systemError(SCMP_SYS(chroot));
         }
-        chdir("/");
-        if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 1,
+        if (chdir("/") == -1) {
+            systemError(SCMP_SYS(chdir));
+        };
+
+        if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0,
                              SCMP_A0(SCMP_CMP_EQ, (scmp_datum_t) codeFile.c_str())))
             systemError(SCMP_SYS(execve));
-
     }
 
     void exec(const path &code) override {
