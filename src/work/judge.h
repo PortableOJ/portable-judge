@@ -92,11 +92,12 @@ JudgeWork::JudgeWork(id solutionId, SessionPool *sp, ThreadPool *tp) : Task((voi
         reportNoCallback(request);
     };
 
-
     if (!init()) {
         reportResult(JudgeResultEnum::SystemError);
         return;
     }
+
+    /// region 获取文件与编译
 
     FileManager::checkProblemDir(problemId);
     FileManager::createSolutionDir(solutionId);
@@ -117,6 +118,8 @@ JudgeWork::JudgeWork(id solutionId, SessionPool *sp, ThreadPool *tp) : Task((voi
     threadPool->submit(judgeTask);
     threadPool->submit(codeTask);
     cm.wait();
+
+    /// endregion
 
     /// region 检查编译信息
 
@@ -210,6 +213,7 @@ JudgeWork::JudgeWork(id solutionId, SessionPool *sp, ThreadPool *tp) : Task((voi
 
             string response;
             SolutionReportRequest request("test", to_string((int) codeResult));
+            request.setLimitResult(codeReport.timeCost, codeReport.memoryCost);
             report(request, [&](JudgeWork *judgeWork, stringstream &ss) {
                 ss >> response;
             });

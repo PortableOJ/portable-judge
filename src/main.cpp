@@ -17,7 +17,7 @@ int main() {
 
     CppRunner cppRunner;
     JudgeResultEnum resultEnum = cppRunner.run("./src/test/tmp/main.cpp", input, output, error,
-                                               1, 100000000ul, &report, false);
+                                               1, 100000000ul, "", &report, false);
 
     Logger::info("result: %", (int) resultEnum);
 

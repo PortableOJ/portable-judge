@@ -186,7 +186,7 @@ JudgeResultEnum Runner::run(const path &code,
     unsigned long randomCode = xOrShf96() % 100000 + 1;
     int pid = fork();
     if (pid == 0) {
-        runCode(code, input, output, error, limitTime, limitMemory, randomCode, allowOpenFile);
+        runCode(code, input, output, error, limitTime, limitMemory, params, randomCode, allowOpenFile);
         return JudgeResultEnum::JudgeCompileError;
     } else {
         return trace(pid, randomCode, error, report);

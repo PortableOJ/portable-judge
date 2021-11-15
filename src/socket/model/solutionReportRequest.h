@@ -12,6 +12,8 @@ public:
     SolutionReportRequest(const string &type, const string &value);
 
     void setSolutionId(id solutionId);
+
+    void setLimitResult(unsigned long timeCost, unsigned long memoryCost);
 };
 
 /// region define
@@ -23,6 +25,11 @@ SolutionReportRequest::SolutionReportRequest(const string &type, const string &v
 
 void SolutionReportRequest::setSolutionId(id solutionId) {
     this->set(constant.id, to_string(solutionId));
+}
+
+void SolutionReportRequest::setLimitResult(unsigned long timeCost, unsigned long memoryCost) {
+    this->set(constant.timeCost, to_string(timeCost));
+    this->set(constant.memoryCost, to_string(memoryCost));
 }
 
 /// endregion

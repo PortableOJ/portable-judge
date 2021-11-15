@@ -57,7 +57,7 @@ add_executable(main
         src/util/logger.h
         src/util/mutex.h
         src/util/timeoutMutex.h
-        src/work/judge.h src/work/output.h src/socket/model/solutionInfoRequest.h src/util/util.h src/socket/model/solutionReportRequest.h src/runner/runnerFactory.h)
+        src/work/judge.h src/work/output.h src/socket/model/solutionInfoRequest.h src/util/util.h src/socket/model/solutionReportRequest.h src/runner/runnerFactory.h src/socket/model/solutionReportTestRequest.h)
 
 target_link_libraries(main seccomp)
 
