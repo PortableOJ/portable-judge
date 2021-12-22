@@ -48,8 +48,6 @@ add_executable(main
         src/socket/model/solutionReportRequest.h
         src/socket/model/standardJudgeCodeRequest.h
         src/socket/model/standardJudgeRequest.h
-        src/socket/model/solutionInfoRequest.h
-        src/socket/model/solutionReportRequest.h
 
         src/thread/__init__.h
         src/thread/job.h
