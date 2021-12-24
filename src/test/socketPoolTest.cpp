@@ -7,10 +7,10 @@
 int main() {
     Logger::init();
 
+    Env::init("env");
     Env *env = Env::ctx();
     string code = "MyCode";
     env->set(constant.judgeCode, &code);
-
     auto *socketPool = new SessionPool(env->getInt(constant.initSocketCore));
     socketPool->init();
 
