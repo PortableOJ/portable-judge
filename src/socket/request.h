@@ -55,7 +55,7 @@ void Request::send(int socketId) {
     for (auto &item : data)
         bufferLen += (int) item.first.length() + (int) item.second.length() + 2;
     char *tmp = new char[100];
-    int headLen = sprintf(tmp, "BEGIN\n%s\n%d\n", method, bufferLen);
+    int headLen = sprintf(tmp, "%s\n%d\n", method, bufferLen);
     write(socketId, tmp, headLen);
     delete[] tmp;
     for (auto &item : data) {
@@ -67,7 +67,6 @@ void Request::send(int socketId) {
     if (!data.empty()) {
         write(socketId, "0\n", 2);
     }
-    write(socketId, "END\n", 4);
 }
 
 const char *Request::getMethod() const {

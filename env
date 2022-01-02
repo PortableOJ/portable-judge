@@ -11,9 +11,9 @@ home=/home/mauve/portable
 initSocketCore=1
 ===================server 相关配置=================
 = server 服务器的 url 地址
-serverUrl=10.21.234.123
+serverUrl=192.168.2.110
 = server 服务器的 port
-serverPort=12345
+serverPort=9090
 = server 的密钥
 serverCode=abc
 ===================编译相关配置=====================

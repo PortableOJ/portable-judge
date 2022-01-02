@@ -21,6 +21,18 @@ private:
 
     static unsigned long maxRunningRealTime;
 
+    /**
+     * 运行代码
+     * @param code 代码路径，非可执行文件路径
+     * @param input 设定的输入文件句柄
+     * @param output 设定的标准输出文件句柄
+     * @param error 设定的错误输出文件句柄
+     * @param limitTime 时间限制（s）
+     * @param limitMemory 内存限制（B）
+     * @param params 额外的参数
+     * @param randomCode 随机数值
+     * @param allowOpenFile 是否允许打开文件
+     */
     void runCode(const path &code,
                  int *input, int *output, int *error,
                  unsigned long limitTime, unsigned long limitMemory,
@@ -187,7 +199,7 @@ JudgeResultEnum Runner::run(const path &code,
     int pid = fork();
     if (pid == 0) {
         runCode(code, input, output, error, limitTime, limitMemory, params, randomCode, allowOpenFile);
-        return JudgeResultEnum::JudgeCompileError;
+        return JudgeResultEnum::SystemError;
     } else {
         return trace(pid, randomCode, error, report);
     }

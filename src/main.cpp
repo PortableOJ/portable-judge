@@ -1,31 +1,38 @@
-#include "thread/__init__.h"
+//
+// Created by keqing on 2021-10-29.
+//
+
 #include "socket/__init__.h"
-#include "compiler/__init__.h"
-#include "file/__init__.h"
-#include "runner/__init__.h"
 
 int main() {
     Logger::init();
 
-    int input[2], output[2], error[2];
+    Env::init("env");
+    Env *env = Env::ctx();
+    string code = "MyCode";
+    env->set(constant.judgeCode, &code);
+    auto *socketPool = new SessionPool(env->getInt(constant.initSocketCore));
+    socketPool->init();
 
-    pipe(input);
-    pipe(output);
-    pipe(error);
+    RegisterRequest registerRequest;
+    AppendRequest appendRequest;
+    Callback callback(nullptr, [&](void *, stringstream &ss) {
+        string ans;
+        getline(ss, ans);
+        Logger::trace("%", ans);
+    });
+    CountMutex cm(100);
 
-    Report report{};
+    Job *job1 = new SocketWork(&registerRequest, &callback, &cm);
+    Job *job2 = new SocketWork(&appendRequest, &callback, &cm);
+    socketPool->submit(job1);
+    socketPool->submit(job2);
 
-    CppRunner cppRunner;
-    JudgeResultEnum resultEnum = cppRunner.run("./src/test/tmp/main.cpp", input, output, error,
-                                               1, 100000000ul, "", &report, false);
+    cm.wait();
 
-    Logger::info("result: %", (int) resultEnum);
-
-    close(output[1]);
-    char buffer[100] = {0};
-    int n = read(output[0], buffer, 100);
-    buffer[n] = 0;
-    Logger::info("output: %", buffer);
+    socketPool->wait();
+    delete socketPool;
 
     Logger::close();
 }
+
