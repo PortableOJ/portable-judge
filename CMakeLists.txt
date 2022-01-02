@@ -66,7 +66,11 @@ add_executable(main
         src/work/output.h
         )
 
-target_link_libraries(main seccomp)
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+
+    target_link_libraries(main seccomp)
+
+endif ()
 
 find_package(Threads)
 target_link_libraries(main ${CMAKE_THREAD_LIBS_INIT})

@@ -7,11 +7,12 @@
 
 #include <pthread.h>
 
+#include <ctime>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cmath>
-#include <ctime>
+#include <csignal>
 
 #include <map>
 #include <set>
@@ -24,16 +25,23 @@
 #include <istream>
 #include <ostream>
 #include <fstream>
+#include <sstream>
 #include <filesystem>
 #include <functional>
 #include <unordered_map>
 #include <condition_variable>
 
+#ifdef __linux__
 #include <wait.h>
+#endif
+
 #include <fcntl.h>
 #include <netdb.h>
 #include <unistd.h>
+#ifdef __linux__
 #include <seccomp.h>
+#endif
+
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -57,5 +65,29 @@ namespace STD {
     const int m = 60 * s;
     const int h = 60 * m;
 }
+
+#ifdef __APPLE__
+
+// 在 mac 下模拟伪造拥有系统调用环境保护，仅适用于测试整体流程，对安全性测试应当在 Linux 下进行
+
+// class
+#define scmp_filter_ctx int
+#define scmp_datum_t void*
+
+// function
+#define SCMP_SYS(a) 0
+#define SCMP_A0(a, b) 0
+#define seccomp_rule_add(a, b, c, d, ...) 0
+#define seccomp_init(a) 0
+#define seccomp_load(a) 0
+#define seccomp_release(a) 0
+
+// value
+#define SCMP_ACT_KILL 0
+#define SCMP_ACT_ALLOW 0
+#define SCMP_CMP_EQ 0
+
+
+#endif
 
 #endif //JUDGE_INCLUDE_H
