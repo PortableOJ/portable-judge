@@ -87,7 +87,6 @@ namespace STD {
 #define SCMP_ACT_ALLOW 0
 #define SCMP_CMP_EQ 0
 
-
 #endif
 
 #endif //JUDGE_INCLUDE_H

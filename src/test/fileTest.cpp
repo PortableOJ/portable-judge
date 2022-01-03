@@ -2,10 +2,10 @@
 // Created by keqing on 2021-11-14.
 //
 
-#include "thread/__init__.h"
-#include "socket/__init__.h"
-#include "compiler/__init__.h"
-#include "file/__init__.h"
+#include "../thread/__init__.h"
+#include "../socket/__init__.h"
+#include "../compiler/__init__.h"
+#include "../file/__init__.h"
 
 int main() {
     Logger::init();
