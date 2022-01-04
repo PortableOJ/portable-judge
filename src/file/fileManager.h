@@ -74,7 +74,7 @@ bool FileManager::initStandardJudge() {
     Job *getStandardJudgeList = new SocketWork(&standardJudgeRequest, &standardJudgeCallback, &cm);
     sessionPool->submit(getStandardJudgeList);
     cm.wait();
-    int len = standardJudgeNameList.size();
+    int len = (int) standardJudgeNameList.size();
 
     /// endregion
 

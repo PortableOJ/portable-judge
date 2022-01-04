@@ -47,7 +47,10 @@ void CppCompiler::toCompile(const path &code, const string &param) {
 
     const char cmd[] = "/usr/bin/g++";
     const char *const argv[] = {cmd, code.c_str(), "-O2", "-o", output.c_str(), "-Wall", "-lm",
-                                "--static", param.c_str(), "-DONLINE_JUDGE", "-fmax-errors=5", nullptr};
+#ifdef __linux__
+                                "--static",
+#endif
+                                param.c_str(), "-DONLINE_JUDGE", "-fmax-errors=5", nullptr};
     const char *const env[] = {"PATH=/usr/bin", nullptr};
 
     freopen(compileInfo.c_str(), "w", stderr);
@@ -59,7 +62,7 @@ string CppCompiler::versionSupport() const {
     if (doCmd("g++ --version", str)) {
         return string("CPP ") + to_string(str.length()) + "\n" + str + "\n";
     }
-    return string();
+    return str;
 }
 
 bool CppCompiler::compile(const path &code, const string &param) const {

@@ -5,6 +5,8 @@
 #ifndef JUDGE_CALLBACK_H
 #define JUDGE_CALLBACK_H
 
+#include <utility>
+
 #include "../util/__init__.h"
 
 const int bufferSize = 1024;
@@ -14,9 +16,9 @@ private:
     void *data;
     string *filePath;
     function<void(void *, stringstream &)> func;
+    function<void()> failAction;
 
     char *buffer;
-    int dataLen;
     int socketId;
 
     char getNext();
@@ -32,11 +34,11 @@ private:
     void clearSocket();
 
 public:
-    Callback(void *data, function<void(void *, stringstream &)> func);
+    Callback(void *data, function<void(void *, stringstream &)> func, function<void()> failAction = nullptr);
 
-    explicit Callback(const string &fileName);
+    explicit Callback(const string &fileName, function<void()> failAction = nullptr);
 
-    explicit Callback(const path &fileName);
+    explicit Callback(const path &fileName, function<void()> failAction = nullptr);
 
     bool exec(int sid);
 };
@@ -44,8 +46,8 @@ public:
 // region define
 
 char Callback::getNext() {
-    static int curPos = 0;
-    static int curLen = 0;
+    static long curPos = 0;
+    static long curLen = 0;
     if (curPos >= curLen) {
         curLen = read(socketId, buffer, bufferSize);
         curPos = 0;
@@ -93,15 +95,17 @@ void Callback::clearSocket() {
             getNext();
 }
 
-Callback::Callback(void *data, function<void(void *, stringstream &)> func)
-        : data(data), filePath(nullptr), func(move(func)), buffer(nullptr), dataLen(0), socketId(-1) {}
+Callback::Callback(void *data, function<void(void *, stringstream &)> func, function<void()> failAction)
+        : data(data), filePath(nullptr), func(move(func)),
+          failAction(move(failAction)), buffer(nullptr), socketId(-1) {}
 
-Callback::Callback(const string &fileName)
-        : data(nullptr), filePath(new string(fileName)), func(nullptr), buffer(nullptr), dataLen(0), socketId(-1) {}
+Callback::Callback(const string &fileName, function<void()> failAction)
+        : data(nullptr), filePath(new string(fileName)), func(nullptr),
+          failAction(move(failAction)), buffer(nullptr), socketId(-1) {}
 
-Callback::Callback(const path &fileName)
-        : data(nullptr), filePath(new string(fileName.string())), func(nullptr), buffer(nullptr), dataLen(0),
-          socketId(-1) {}
+Callback::Callback(const path &fileName, function<void()> failAction)
+        : data(nullptr), filePath(new string(fileName.string())), func(nullptr),
+          failAction(move(failAction)), buffer(nullptr), socketId(-1) {}
 
 bool Callback::exec(int sid) {
     this->socketId = sid;
@@ -110,6 +114,12 @@ bool Callback::exec(int sid) {
     if (!checkStatus()) {
         clearSocket();
         delete[] buffer;
+        if (failAction == nullptr) {
+            Logger::err("遇到了错误的返回状态码");
+            exit(-1);
+        } else {
+            failAction();
+        }
         return false;
     } else if (filePath == nullptr) {
         stringstream ss;

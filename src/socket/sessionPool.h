@@ -23,7 +23,6 @@ public:
 /// region define
 
 function<void()> SessionPool::workFunc() {
-    Logger::trace("Session");
     return [&]() {
         Env *env = Env::ctx();
         Session session(*env->getString(constant.serverUrl), env->getInt(constant.serverPort));
@@ -31,16 +30,9 @@ function<void()> SessionPool::workFunc() {
         /// region append
 
         {
-            bool connectFail = false;
             AppendRequest appendRequest;
-            Callback callback(nullptr, [&](void *, stringstream &ss) {
-                string str;
-                ss >> str;
-                if (str != "OK") {
-                    connectFail = true;
-                }
-            });
-            if (session.send(&appendRequest, &callback) || connectFail) {
+            Callback callback(nullptr, [&](void *, stringstream &ss) {});
+            if (!session.send(&appendRequest, &callback)) {
                 killSelf();
                 return;
             }
@@ -72,9 +64,9 @@ function<void()> SessionPool::workFunc() {
         /// region close
 
         {
-            CloseRequest closeRequest;
-            Callback callback(nullptr, [&](void *, stringstream &ss) {});
-            session.send(&closeRequest, &callback);
+//            CloseRequest closeRequest;
+//            Callback callback(nullptr, [&](void *, stringstream &ss) {});
+//            session.send(&closeRequest, &callback);
             session.close();
         }
 

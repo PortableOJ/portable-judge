@@ -81,7 +81,6 @@ Job *ThreadPool::takeJob() {
 }
 
 function<void()> ThreadPool::workFunc() {
-    Logger::trace("Normal");
     return [&]() {
         while (true) {
             Job *cur = takeJob();
