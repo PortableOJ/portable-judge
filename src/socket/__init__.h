@@ -1,12 +1,12 @@
 //
-// Created by keqing on 2021-10-22.
+// Created by 胡柯青 on 2021-10-22.
 //
 
 #ifndef JUDGE_SOCKET_INIT_H
 #define JUDGE_SOCKET_INIT_H
 
 #include "model/appendRequest.h"
-#include "model/closeRequest.h"
+#include "model/heartbeatRequest.h"
 #include "model/problemDataInRequest.h"
 #include "model/problemDataOutRequest.h"
 #include "model/problemJudgeCodeRequest.h"

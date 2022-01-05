@@ -1,5 +1,5 @@
 //
-// Created by keqing on 2021-10-10.
+// Created by 胡柯青 on 2021-10-10.
 //
 
 #ifndef JUDGE_THREAD_POOL_H
@@ -57,7 +57,7 @@ public:
 /// region define
 
 void ThreadPool::addThread() {
-    auto *newThread = new thread(workFunc());
+    auto *newThread = new thread(   workFunc());
     threadPool.run([&](map<pthread_t, thread *> &data) {
         data.insert({newThread->native_handle(), newThread});
     });

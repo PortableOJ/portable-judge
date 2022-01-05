@@ -38,7 +38,7 @@ add_executable(main
         src/socket/socketWork.h
 
         src/socket/model/appendRequest.h
-        src/socket/model/closeRequest.h
+        src/socket/model/heartbeatRequest.h
         src/socket/model/problemDataInRequest.h
         src/socket/model/problemDataOutRequest.h
         src/socket/model/problemJudgeCodeRequest.h
@@ -62,9 +62,9 @@ add_executable(main
         src/util/timeoutMutex.h
         src/util/util.h
 
-        src/work/judge.h
-        src/work/output.h
-        )
+        src/work/judgeWork.h
+        src/work/testWork.h
+        src/work/__init__.h)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
 

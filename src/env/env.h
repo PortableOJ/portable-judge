@@ -1,5 +1,5 @@
 //
-// Created by keqing on 2021-10-12.
+// Created by 胡柯青 on 2021-10-12.
 //
 
 #ifndef JUDGE_ENV_H
@@ -184,11 +184,12 @@ struct Constant {
     /// region env
 
     const string initThreadCore = "initThreadCore";
+    const string initSocketCore = "initSocketCore";
+    const string initWorkCore = "initWorkCore";
 
     const string localStorage = "localStorage";
     const string home = "home";
 
-    const string initSocketCore = "initSocketCore";
 
     const string serverUrl = "serverUrl";
     const string serverPort = "serverPort";
@@ -199,11 +200,18 @@ struct Constant {
     const string compileMaxMemory = "compileMaxMemory";
     const string compileFileSize = "compileFileSize";
 
+    const string heartbeatTime = "heartbeatTime";
+
     /// endregion
 
     /// region static
 
     const string judgeCode = "judgeCode";           // 本 judge 的编号
+
+    const string terminate = "terminate";           // 终止命令
+
+    const string threadAccumulation = "threadAccumulation"; // 线程池堆积
+    const string socketAccumulation = "socketAccumulation"; // 连接池堆积
 
     const string name = "name";                     // 名称
     const string id = "id";                         // ID
@@ -213,6 +221,16 @@ struct Constant {
     const string memoryCost = "memoryCost";         // memoryCost
 
     const string useDiyJudge = "DIY";               // 使用非默认程序
+
+    /// endregion
+
+    /// region heartbeat
+
+    const string judgeTask = "judgeTask";           // 一个 judge 任务
+    const string testTask = "testTask";             // 一个 test 任务
+    const string threadCore = "threadCore";         // 更新线程池的核心数
+    const string socketCore = "socketCore";         // 更新网络连接池的核心数
+    const string workCore = "workCore";             // 更新任务池的核心数
 
     /// endregion
 
