@@ -9,10 +9,12 @@
 
 class Job {
 private:
+    bool noDelete;
+
     CountMutex *countMutex;
 
 protected:
-    explicit Job(CountMutex *cm);
+    explicit Job(CountMutex *cm, bool noDelete = false);
 
     virtual void work() = 0;
 
@@ -20,17 +22,23 @@ public:
     virtual ~Job() = default;
 
     void exec();
+
+    bool toDelete();
 };
 
 /// region define
 
-Job::Job(CountMutex *cm) : countMutex(cm) {}
+Job::Job(CountMutex *cm, bool noDelete) : countMutex(cm), noDelete(noDelete) {}
 
 void Job::exec() {
     work();
     if (countMutex != nullptr) {
         countMutex->trigger();
     }
+}
+
+bool Job::toDelete() {
+    return !noDelete;
 }
 
 /// endregion

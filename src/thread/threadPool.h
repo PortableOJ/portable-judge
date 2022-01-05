@@ -57,7 +57,7 @@ public:
 /// region define
 
 void ThreadPool::addThread() {
-    auto *newThread = new thread(   workFunc());
+    auto *newThread = new thread(workFunc());
     threadPool.run([&](map<pthread_t, thread *> &data) {
         data.insert({newThread->native_handle(), newThread});
     });
@@ -86,7 +86,9 @@ function<void()> ThreadPool::workFunc() {
             Job *cur = takeJob();
             if (cur != nullptr) {
                 cur->exec();
-                delete cur;
+                if (cur->toDelete()) {
+                    delete cur;
+                }
             } else {
                 if (sleep()) {
                     break;

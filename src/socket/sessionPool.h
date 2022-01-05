@@ -50,7 +50,9 @@ function<void()> SessionPool::workFunc() {
                     Logger::err("socket response fail, method: %", socketWork->getRequest()->getMethod());
                 } else {
                     cur->exec();
-                    delete cur;
+                    if (cur->toDelete()) {
+                        delete cur;
+                    }
                 }
             } else {
                 if (sleep()) {

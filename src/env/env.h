@@ -210,8 +210,13 @@ struct Constant {
 
     const string terminate = "terminate";           // 终止命令
 
+    const string maxThreadCore = "maxThreadCore";           // 最大线程池核心线程数
+    const string maxSocketCore = "maxSocketCore";           // 最大网络池核心线程数
+    const string maxWorkCore = "maxWorkCore";               // 最大任务池核心线程数
+
     const string threadAccumulation = "threadAccumulation"; // 线程池堆积
     const string socketAccumulation = "socketAccumulation"; // 连接池堆积
+    const string workAccumulation = "workAccumulation"; // 连接池堆积
 
     const string name = "name";                     // 名称
     const string id = "id";                         // ID

@@ -35,6 +35,8 @@ protected:
 
     void set(const string &key, const string &value);
 
+    void set(const string &key, int value);
+
 public:
 
     void send(int socketId);
@@ -50,15 +52,19 @@ void Request::set(const string &key, const string &value) {
     data.insert({key, value});
 }
 
+void Request::set(const string &key, int value) {
+    data.insert({key, to_string(value)});
+}
+
 void Request::send(int socketId) {
     int bufferLen = 0;
-    for (auto &item : data)
+    for (auto &item: data)
         bufferLen += (int) item.first.length() + (int) item.second.length() + 2;
     char *tmp = new char[100];
     int headLen = sprintf(tmp, "%s\n%d\n", method, bufferLen);
     write(socketId, tmp, headLen);
     delete[] tmp;
-    for (auto &item : data) {
+    for (auto &item: data) {
         write(socketId, item.first.c_str(), item.first.length());
         write(socketId, " ", 1);
         write(socketId, item.second.c_str(), item.second.length());
@@ -76,14 +82,12 @@ const char *Request::getMethod() const {
 /**
  * REQUEST Format
  *
- * BEGIN
  * ${METHOD}
  * ${len}
  * abc
  * ${len}
  * abc
  * 0
- * END
  *
  * RESPONSE Format
  * ${code}

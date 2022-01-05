@@ -15,7 +15,11 @@ public:
 /// region define
 
 RegisterRequest::RegisterRequest() : Request(Api::Register) {
-    this->set(constant.serverCode, *Env::ctx()->getString(constant.serverCode));
+    Env *env = Env::ctx();
+    this->set(constant.serverCode, *env->getString(constant.serverCode));
+    this->set(constant.maxThreadCore, env->getInt(constant.initThreadCore));
+    this->set(constant.maxSocketCore, env->getInt(constant.initSocketCore));
+    this->set(constant.maxWorkCore, env->getInt(constant.initWorkCore));
 }
 
 /// endregion

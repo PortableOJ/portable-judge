@@ -43,7 +43,7 @@ int main() {
 
     bool terminate = false;
     int heartbeatTime = env->getInt(constant.heartbeatTime);
-    HeartbeatRequest heartbeatRequest(threadPool->getAccumulation(), socketPool->getAccumulation());
+    HeartbeatRequest heartbeatRequest;
     Callback heartbeatCallback(nullptr, [&](void *, stringstream &ss) {
         string key;
         id value;
@@ -72,11 +72,14 @@ int main() {
         }
     });
     CountMutex heartbeatCM(1);
+    SocketWork socketWork(&heartbeatRequest, &heartbeatCallback, &heartbeatCM);
 
     while (!terminate) {
         heartbeatCM.reset(1);
-        auto *socketWork = new SocketWork(&heartbeatRequest, &heartbeatCallback, &heartbeatCM);
-        socketPool->submit(socketWork);
+        heartbeatRequest.updateThread(threadPool->getAccumulation());
+        heartbeatRequest.updateSocket(workPool->getAccumulation());
+        heartbeatRequest.updateWork(socketPool->getAccumulation());
+        socketPool->submit(&socketWork);
         heartbeatCM.wait();
         sleep(heartbeatTime);
     }

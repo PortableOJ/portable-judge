@@ -9,28 +9,30 @@
 
 class HeartbeatRequest : public Request {
 public:
-    HeartbeatRequest(int threadAccumulation, int socketAccumulation);
+    HeartbeatRequest();
 
     void updateThread(int newValue);
 
     void updateSocket(int newValue);
+    void updateWork(int newValue);
 };
 
 /// region define
 
-HeartbeatRequest::HeartbeatRequest(int threadAccumulation, int socketAccumulation) : Request(Api::Heartbeat) {
-    this->set(constant.threadAccumulation, to_string(threadAccumulation));
-    this->set(constant.socketAccumulation, to_string(socketAccumulation));
+HeartbeatRequest::HeartbeatRequest() : Request(Api::Heartbeat) {
 }
 
 void HeartbeatRequest::updateThread(int newValue) {
-    this->set(constant.threadAccumulation, to_string(newValue));
+    this->set(constant.threadAccumulation, newValue);
 }
 
 void HeartbeatRequest::updateSocket(int newValue) {
-    this->set(constant.socketAccumulation, to_string(newValue));
+    this->set(constant.socketAccumulation, newValue);
 }
 
+void HeartbeatRequest::updateWork(int newValue) {
+    this->set(constant.workAccumulation, newValue);
+}
 /// endregion
 
 #endif //JUDGE_HEARTBEAT_REQUEST_H
