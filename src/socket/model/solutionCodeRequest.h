@@ -9,13 +9,13 @@
 
 class SolutionCodeRequest : public Request {
 public:
-    explicit SolutionCodeRequest(int solutionId);
+    explicit SolutionCodeRequest(id solutionId);
 };
 
 /// region define
 
-SolutionCodeRequest::SolutionCodeRequest(int solutionId) : Request(Api::SolutionCodeRequest) {
-    this->set(constant.id, to_string(solutionId));
+SolutionCodeRequest::SolutionCodeRequest(id solutionId) : Request(Api::SolutionCodeRequest) {
+    this->set(constant.id, solutionId);
 }
 
 /// endregion

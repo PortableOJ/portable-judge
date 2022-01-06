@@ -9,13 +9,13 @@
 
 class ProblemJudgeCodeRequest : public Request {
 public:
-    explicit ProblemJudgeCodeRequest(int id);
+    explicit ProblemJudgeCodeRequest(id id);
 };
 
 /// region define
 
-ProblemJudgeCodeRequest::ProblemJudgeCodeRequest(int id) : Request(Api::ProblemJudgeCodeRequest) {
-    this->set(constant.id, to_string(id));
+ProblemJudgeCodeRequest::ProblemJudgeCodeRequest(id id) : Request(Api::ProblemJudgeCodeRequest) {
+    this->set(constant.id, id);
 }
 
 /// endregion

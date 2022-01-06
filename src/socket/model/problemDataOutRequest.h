@@ -9,13 +9,13 @@
 
 class ProblemDataOutRequest : public Request {
 public:
-    ProblemDataOutRequest(int problemId, const string &inputName);
+    ProblemDataOutRequest(id problemId, const string &inputName);
 };
 
 /// region define
 
-ProblemDataOutRequest::ProblemDataOutRequest(int problemId, const string &inputName) : Request(Api::ProblemDataOutRequest) {
-    this->set(constant.id, to_string(problemId));
+ProblemDataOutRequest::ProblemDataOutRequest(id problemId, const string &inputName) : Request(Api::ProblemDataOutRequest) {
+    this->set(constant.id, problemId);
     this->set(constant.name, inputName);
 }
 
