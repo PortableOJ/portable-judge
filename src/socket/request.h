@@ -37,6 +37,8 @@ protected:
 
     void set(const string &key, int value);
 
+    void set(const string &key, id value);
+
 public:
 
     void send(int socketId);
@@ -53,6 +55,10 @@ void Request::set(const string &key, const string &value) {
 }
 
 void Request::set(const string &key, int value) {
+    data.insert({key, to_string(value)});
+}
+
+void Request::set(const string &key, id value) {
     data.insert({key, to_string(value)});
 }
 

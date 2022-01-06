@@ -9,13 +9,13 @@
 
 class ProblemDataInRequest : public Request {
 public:
-    ProblemDataInRequest(int problemId, const string &inputName);
+    ProblemDataInRequest(id problemId, const string &inputName);
 };
 
 /// region define
 
-ProblemDataInRequest::ProblemDataInRequest(int problemId, const string &inputName) : Request(Api::ProblemDataInRequest) {
-    this->set(constant.id, to_string(problemId));
+ProblemDataInRequest::ProblemDataInRequest(id problemId, const string &inputName) : Request(Api::ProblemDataInRequest) {
+    this->set(constant.id, problemId);
     this->set(constant.name, inputName);
 }
 
