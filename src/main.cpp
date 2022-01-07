@@ -72,7 +72,7 @@ int main() {
         }
     });
     CountMutex heartbeatCM(1);
-    SocketWork socketWork(&heartbeatRequest, &heartbeatCallback, &heartbeatCM);
+    SocketWork socketWork(&heartbeatRequest, &heartbeatCallback, &heartbeatCM, true);
 
     while (!terminate) {
         heartbeatCM.reset(1);

@@ -25,7 +25,7 @@ public:
      * @param cal
      * @param cm
      */
-    SocketWork(Request *req, Callback *cal, CountMutex *cm = nullptr);
+    SocketWork(Request *req, Callback *cal, CountMutex *cm = nullptr, bool noDelete = false);
 
     ~SocketWork() override;
 
@@ -37,7 +37,7 @@ public:
 
 void SocketWork::work() {}
 
-SocketWork::SocketWork(Request *req, Callback *cal, CountMutex *cm) : Job(cm), request(req), callback(cal) {}
+SocketWork::SocketWork(Request *req, Callback *cal, CountMutex *cm, bool noDelete) : Job(cm, noDelete), request(req), callback(cal) {}
 
 SocketWork::~SocketWork() = default;
 
