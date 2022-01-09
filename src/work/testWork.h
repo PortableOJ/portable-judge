@@ -14,4 +14,16 @@ public:
 
 };
 
+/// region define
+
+TestWork::TestWork(id problemId, ThreadPool *tp, SessionPool *sp) {
+
+}
+
+void TestWork::start() {
+
+}
+
+/// endregion
+
 #endif //JUDGE_TEST_WORK_H

@@ -78,7 +78,7 @@ namespace STD {
 #define SCMP_SYS(a) 0
 #define SCMP_A0(a, b) 0
 #define seccomp_rule_add(a, b, c, d, ...) 0
-#define seccomp_init(a) 0
+#define seccomp_init(a) 1
 #define seccomp_load(a) 0
 #define seccomp_release(a) 0
 

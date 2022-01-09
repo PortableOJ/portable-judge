@@ -220,7 +220,9 @@ struct Constant {
 
     const string name = "name";                     // 名称
     const string id = "id";                         // ID
+    const string msg = "msg";                       // msg
     const string value = "value";                   // value
+    const string judge = "judge";                   // judge
     const string type = "type";                     // type
     const string timeCost = "timeCost";             // timeCost
     const string memoryCost = "memoryCost";         // memoryCost
@@ -236,6 +238,17 @@ struct Constant {
     const string threadCore = "threadCore";         // 更新线程池的核心数
     const string socketCore = "socketCore";         // 更新网络连接池的核心数
     const string workCore = "workCore";             // 更新任务池的核心数
+
+    /// endregion
+
+    /// region Solution Info
+
+    const string problemId = "problemId";
+    const string language = "language";
+    const string judgeName = "judgeName";
+    const string testNum = "testNum";
+    const string timeLimit = "timeLimit";
+    const string memoryLimit = "memoryLimit";
 
     /// endregion
 

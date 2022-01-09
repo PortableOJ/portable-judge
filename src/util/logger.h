@@ -96,7 +96,7 @@ void Logger::print(const string &level, const string &msg, const Args &... args)
                 "%s %6s [%20lu] : ",
                 timer(),
                 level.data(),
-                pthread_self()
+                (unsigned long) pthread_self()
         );
         Logger::out << format;
         delete[] format;

@@ -16,7 +16,7 @@ private:
     void *data;
     string *filePath;
     function<void(void *, stringstream &)> func;
-    function<void()> failAction;
+    function<void(void *)> failAction;
 
     char *buffer;
     int socketId;
@@ -34,11 +34,11 @@ private:
     void clearSocket();
 
 public:
-    Callback(void *data, function<void(void *, stringstream &)> func, function<void()> failAction = nullptr);
+    Callback(void *data, function<void(void *, stringstream &)> func, function<void(void *)> failAction = nullptr);
 
-    explicit Callback(const string &fileName, function<void()> failAction = nullptr);
+    explicit Callback(const string &fileName, function<void(void *)> failAction = nullptr);
 
-    explicit Callback(const path &fileName, function<void()> failAction = nullptr);
+    explicit Callback(const path &fileName, function<void(void *)> failAction = nullptr);
 
     bool exec(int sid);
 };
@@ -95,15 +95,15 @@ void Callback::clearSocket() {
             getNext();
 }
 
-Callback::Callback(void *data, function<void(void *, stringstream &)> func, function<void()> failAction)
+Callback::Callback(void *data, function<void(void *, stringstream &)> func, function<void(void *)> failAction)
         : data(data), filePath(nullptr), func(move(func)),
           failAction(move(failAction)), buffer(nullptr), socketId(-1) {}
 
-Callback::Callback(const string &fileName, function<void()> failAction)
+Callback::Callback(const string &fileName, function<void(void *)> failAction)
         : data(nullptr), filePath(new string(fileName)), func(nullptr),
           failAction(move(failAction)), buffer(nullptr), socketId(-1) {}
 
-Callback::Callback(const path &fileName, function<void()> failAction)
+Callback::Callback(const path &fileName, function<void(void *)> failAction)
         : data(nullptr), filePath(new string(fileName.string())), func(nullptr),
           failAction(move(failAction)), buffer(nullptr), socketId(-1) {}
 
@@ -118,7 +118,7 @@ bool Callback::exec(int sid) {
             Logger::err("遇到了错误的返回状态码");
             exit(-1);
         } else {
-            failAction();
+            failAction(data);
         }
         return false;
     } else if (filePath == nullptr) {

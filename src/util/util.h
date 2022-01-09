@@ -27,4 +27,16 @@ unsigned long toUL(const string &str) {
     return tmp;
 }
 
+int readInt(int socketId) {
+    char c;
+    int code = 0;
+    while (read(socketId, &c, 1)) {
+        if (isdigit(c)) {
+            code *= 10;
+            code += c - '0';
+        } else break;
+    }
+    return code;
+}
+
 #endif //JUDGE_UTIL_H

@@ -32,6 +32,9 @@ protected:
         const char *const env[] = {"PATH=/", nullptr};
         execve(codeFile.c_str(), const_cast<char *const *>(argv), const_cast<char *const *>(env));
     }
+
+public:
+    ~CRunner() override = default;
 };
 
 #endif //JUDGE_C_RUNNER_H

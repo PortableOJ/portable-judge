@@ -56,6 +56,8 @@ public:
                         const string &params,
                         Report *report = nullptr,
                         bool allowOpenFile = false);
+
+    virtual ~Runner() = 0;
 };
 
 /// region define
@@ -159,14 +161,7 @@ JudgeResultEnum Runner::trace(int pid, unsigned long randomCode, int *error, Rep
     }
     bool systemFail;
     if (error != nullptr) {
-        char c;
-        int code = 0;
-        while (read(error[0], &c, 1)) {
-            if (isdigit(c)) {
-                code *= 10;
-                code += c - '0';
-            } else break;
-        }
+        int code = readInt(error[0]);
         systemFail = code == randomCode;
     }
     if (status)

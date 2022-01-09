@@ -17,6 +17,7 @@ private:
 
     static path problemPath;
     static path solutionPath;
+    static path judgePath;
     static path standardJudgePath;
 
     static SessionPool *sessionPool;
@@ -26,6 +27,9 @@ private:
     static bool initStandardJudge();
 
 public:
+
+    static void setHome();
+
     static bool init(SessionPool *sp, ThreadPool *tp);
 
     static void checkProblemDir(id problemId);
@@ -51,6 +55,7 @@ bool FileManager::localStorage = false;
 
 path FileManager::problemPath("problem");                   // NOLINT
 path FileManager::solutionPath("solution");                 // NOLINT
+path FileManager::judgePath("judge");                       // NOLINT
 path FileManager::standardJudgePath("standardJudge");       // NOLINT
 
 SessionPool *FileManager::sessionPool = nullptr;
@@ -59,6 +64,8 @@ const Compiler *FileManager::cppCompiler = nullptr;
 
 bool FileManager::initStandardJudge() {
     CountMutex cm(0);
+
+    create_directories(judgePath / standardJudgePath);
 
     /// region 获取标准 judge 程序列表
 
@@ -88,7 +95,7 @@ bool FileManager::initStandardJudge() {
     for (int i = 0; i < len; ++i) {
         const string &fileName = standardJudgeNameList[i];
         requestList[i] = new StandardJudgeCodeRequest(fileName);
-        standardJudgePathList[i] = standardJudgePath / fileName;
+        standardJudgePathList[i] = judgePath / standardJudgePath / fileName;
         standardJudgePathList[i] += Judge.getExtension();
         callbackList[i] = new Callback(standardJudgePathList[i]);
         Job *getJudgeCode = new SocketWork(requestList[i], callbackList[i], &cm);
@@ -126,7 +133,7 @@ bool FileManager::initStandardJudge() {
     return mutex.get();
 }
 
-bool FileManager::init(SessionPool *sp, ThreadPool *tp) {
+void FileManager::setHome() {
     const string *home = Env::ctx()->getString(constant.home);
 
     if (home == nullptr) {
@@ -137,9 +144,12 @@ bool FileManager::init(SessionPool *sp, ThreadPool *tp) {
         chdir(home->c_str());
     }
 
+}
+
+bool FileManager::init(SessionPool *sp, ThreadPool *tp) {
     create_directories(problemPath);
     create_directories(solutionPath);
-    create_directories(standardJudgePath);
+    create_directories(judgePath);
 
     sessionPool = sp;
     threadPool = tp;
@@ -182,23 +192,24 @@ path FileManager::createSolutionCode(id solutionId, const Language &language) {
 
 path FileManager::checkJudge(const string &judgeName, id problemId, bool &compileResult) {
     if (judgeName == constant.useDiyJudge) {
-        path judgePath = problemPath / to_string(problemId) / Judge.getCodeName();
-        if (exists(judgePath)) return judgePath;
+        path curJudgePath = judgePath / to_string(problemId);
+        curJudgePath.replace_extension(Judge.getExtension());
+        if (exists(curJudgePath)) return curJudgePath;
 
-        judgePath += Judge.getExtension();
+        curJudgePath += Judge.getExtension();
         CountMutex cm(1);
         ProblemJudgeCodeRequest request(problemId);
-        Callback callback(judgePath);
+        Callback callback(curJudgePath);
         auto socketWork = new SocketWork(&request, &callback, &cm);
         sessionPool->submit(socketWork);
         cm.wait();
 
-        compileResult = cppCompiler->compile(judgePath, Judge.getParams());
+        compileResult = cppCompiler->compile(curJudgePath, Judge.getParams());
 
-        return judgePath;
+        return curJudgePath;
     } else {
-        path judgePath = standardJudgePath / judgeName;
-        return judgePath;
+        path curJudgePath = judgePath / standardJudgePath / judgeName;
+        return curJudgePath;
     }
 }
 

@@ -14,6 +14,8 @@ int main() {
     Env::init("env");
     Env *env = Env::ctx();
 
+    FileManager::setHome();
+
     Session session(*env->getString(constant.serverUrl), env->getInt(constant.serverPort));
     RegisterRequest registerRequest;
     Callback registerCallback(nullptr, [&](void *, stringstream &ss) {

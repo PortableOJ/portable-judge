@@ -7,7 +7,6 @@
 
 #include "../thread/__init__.h"
 #include "model/appendRequest.h"
-#include "model/closeRequest.h"
 #include "../env/__init__.h"
 #include "session.h"
 #include "socketWork.h"

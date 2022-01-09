@@ -44,8 +44,10 @@ add_executable(main
         src/socket/model/problemJudgeCodeRequest.h
         src/socket/model/registerRequest.h
         src/socket/model/solutionCodeRequest.h
+        src/socket/model/solutionCompileMsgReportRequest.h
         src/socket/model/solutionInfoRequest.h
-        src/socket/model/solutionReportRequest.h
+        src/socket/model/solutionTestReportRequest.h
+        src/socket/model/solutionTestRequest.h
         src/socket/model/standardJudgeCodeRequest.h
         src/socket/model/standardJudgeRequest.h
 
@@ -64,7 +66,9 @@ add_executable(main
 
         src/work/judgeWork.h
         src/work/testWork.h
-        src/work/__init__.h)
+        src/work/__init__.h
+
+        )
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
 
