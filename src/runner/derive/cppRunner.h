@@ -15,12 +15,12 @@ protected:
         codeFile = code.filename();
         codeFile.replace_extension("");
 
-        if (chroot(code.parent_path().c_str()) == -1) {
-            systemError(SCMP_SYS(chroot));
-        }
-        if (chdir("/") == -1) {
-            systemError(SCMP_SYS(chdir));
-        };
+//        if (chroot(code.parent_path().c_str()) == -1) {
+//            systemError(SCMP_SYS(chroot));
+//        }
+//        if (chdir("/") == -1) {
+//            systemError(SCMP_SYS(chdir));
+//        };
 
         if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0,
                              SCMP_A0(SCMP_CMP_EQ, (scmp_datum_t) codeFile.c_str())))

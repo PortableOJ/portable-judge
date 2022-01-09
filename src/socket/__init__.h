@@ -12,8 +12,10 @@
 #include "model/problemJudgeCodeRequest.h"
 #include "model/registerRequest.h"
 #include "model/solutionCodeRequest.h"
+#include "model/solutionCompileMsgReportRequest.h"
 #include "model/solutionInfoRequest.h"
-#include "model/solutionReportRequest.h"
+#include "model/solutionTestReportRequest.h"
+#include "model/solutionTestRequest.h"
 #include "model/standardJudgeCodeRequest.h"
 #include "model/standardJudgeRequest.h"
 

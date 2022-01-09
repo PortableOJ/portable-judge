@@ -9,15 +9,24 @@
 #include "derive/cRunner.h"
 
 class RunnerFactory {
+private:
+
+    const static Runner *c;
+    const static Runner *cpp;
+
 public:
+
     const static Runner *getRunner(const Language &language);
 };
 
 /// region define
 
+const Runner *RunnerFactory::c = new CRunner();       // NOLINT
+const Runner *RunnerFactory::cpp = new CppRunner();   // NOLINT
+
 const Runner *RunnerFactory::getRunner(const Language &lang) {
-    if (lang.getLang() == "C") return new CRunner();
-    if (lang.getLang() == "CPP") return new CppRunner();
+    if (lang.getLang() == "C") return c;
+    if (lang.getLang() == "CPP") return cpp;
     return nullptr;
 }
 
