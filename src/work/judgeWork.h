@@ -302,6 +302,7 @@ void JudgeWork::clean() {
 
 JudgeWork::JudgeWork(id solutionId, ThreadPool *tp, SessionPool *sp)
         : resultEnum(JudgeResultEnum::Accept), codeCompileSuccess(false), judgeCompileSuccess(false),
+          codeRunningResult(JudgeResultEnum::Accept), judgeRunningResult(JudgeResultEnum::Accept),
           report(), stopJudge(false), cm(1), solutionId(solutionId), problemId(0),
           language(nullptr), compiler(nullptr), codeRunner(nullptr), judgeRunner(nullptr),
           judgeName(), testNum(0), timeLimit(0), memoryLimit(0), codePath(), judgePath(),
