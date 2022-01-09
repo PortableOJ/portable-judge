@@ -15,11 +15,10 @@ private:
     static void toCompile(const path &code, const string &param);
 
 public:
-    void collectCompileInfo(const path &code, string &result) const override;
-
-    [[nodiscard]] string versionSupport() const override;
 
     [[nodiscard]] bool compile(const path &code, const string &param) const override;
+
+    void collectCompileInfo(const path &code, string &result) const override;
 };
 
 /// region define
@@ -41,28 +40,19 @@ void CppCompiler::toCompile(const path &code, const string &param) {
 
     path output = code;
     output.replace_extension("");
-    path compileInfo = code;
-    compileInfo.remove_filename();
-    compileInfo /= "compileError.txt";
+    path compileInfo = output;
+    compileInfo += "CompileInfo.txt";
 
     const char cmd[] = "/usr/bin/g++";
     const char *const argv[] = {cmd, code.c_str(), "-O2", "-o", output.c_str(), "-Wall", "-lm",
 #ifdef __linux__
-                                "--static",
+            "--static",
 #endif
                                 param.c_str(), "-DONLINE_JUDGE", "-fmax-errors=5", nullptr};
     const char *const env[] = {"PATH=/usr/bin", nullptr};
 
     freopen(compileInfo.c_str(), "w", stderr);
     execve(cmd, const_cast<char *const *>(argv), const_cast<char *const *>(env));
-}
-
-string CppCompiler::versionSupport() const {
-    string str;
-    if (doCmd("g++ --version", str)) {
-        return string("CPP ") + to_string(str.length()) + "\n" + str + "\n";
-    }
-    return str;
 }
 
 bool CppCompiler::compile(const path &code, const string &param) const {
@@ -77,7 +67,8 @@ bool CppCompiler::compile(const path &code, const string &param) const {
 
 void CppCompiler::collectCompileInfo(const path &code, string &result) const {
     path compileInfo = code;
-    compileInfo.replace_filename("compileError.txt");
+    compileInfo.replace_extension("");
+    compileInfo += "CompileInfo.txt";
     ifstream input(compileInfo);
     string tmp;
     while (getline(input, tmp)) result += tmp + '\n';

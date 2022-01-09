@@ -18,7 +18,6 @@ public:
 
 /// region define
 
-
 const Compiler *CompilerFactory::c = new CCompiler();       // NOLINT
 const Compiler *CompilerFactory::cpp = new CppCompiler();   // NOLINT
 

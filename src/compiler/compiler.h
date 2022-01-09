@@ -17,8 +17,6 @@ public:
     static unsigned long compileMaxMemory;
     static unsigned long compileFileSize;
 
-    [[nodiscard]] virtual string versionSupport() const = 0;
-
     [[nodiscard]] virtual bool compile(const path &code, const string &param) const = 0;
 
     virtual void collectCompileInfo(const path &code, string &result) const = 0;
@@ -42,6 +40,5 @@ bool Compiler::doCmd(const char *cmd, string &res) {
     res = to_string(res.length()) + '\n' + res + '\n';
     return true;
 }
-
 
 #endif //JUDGE_COMPILER_H
