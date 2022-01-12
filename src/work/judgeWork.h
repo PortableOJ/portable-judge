@@ -180,12 +180,20 @@ void JudgeWork::run() {
             msg.resize(len);
             read(pipeId, msg.data(), len);
 
-            // testlib 输出 0 表示 AC，否则表示 WA
-            if (code == 0) {
-                solutionTestReportRequest.setValue(static_cast<int>(JudgeResultEnum::Accept));
-            } else {
-                solutionTestReportRequest.setValue(static_cast<int>(JudgeResultEnum::WrongAnswer));
+            // testlib 输出 0 表示 AC，1 表示 WA，2 表示 Judge Fail
+            switch (code) {
+                case 0:
+                    solutionTestReportRequest.setValue(static_cast<int>(JudgeResultEnum::Accept));
+                    break;
+                case 1:
+                    solutionTestReportRequest.setValue(static_cast<int>(JudgeResultEnum::WrongAnswer));
+                    break;
+                case 2:
+                default:
+                    solutionTestReportRequest.setValue(static_cast<int>(JudgeResultEnum::JudgeFail));
+                    break;
             }
+
             solutionTestReportRequest.setMsg(msg);
         } else {
             solutionTestReportRequest.setValue(static_cast<int>(JudgeResultEnum::SystemError));

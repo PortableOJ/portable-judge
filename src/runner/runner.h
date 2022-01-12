@@ -102,7 +102,7 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
         string str = to_string(randomCode);
         Logger::err("Seccomp rule add fail: %", syscall);
         if (error != nullptr && error[1] != -1) write(error[1], str.c_str(), str.size());
-        exit(-1);
+        exit(1);
     };
 
     rlimit timeLimit{limitTime, limitTime + 1};
@@ -189,8 +189,8 @@ JudgeResultEnum Runner::run(const path &code,
                             unsigned long limitTime, unsigned long limitMemory,
                             const string &params,
                             Report *report, bool allowOpenFile) {
-    // 需要一个随机数，保证不为 0 即可
-    unsigned long randomCode = xOrShf96() % 100000 + 1;
+    // 需要一个随机数，保证不为 0 or 1 即可
+    unsigned long randomCode = xOrShf96() % 100000 + 2;
     int pid = fork();
     if (pid == 0) {
         runCode(code, input, output, error, limitTime, limitMemory, params, randomCode, allowOpenFile);
