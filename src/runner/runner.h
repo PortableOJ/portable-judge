@@ -200,6 +200,8 @@ JudgeResultEnum Runner::run(const path &code,
     }
 }
 
+Runner::~Runner() = default;
+
 /// endregion
 
 #endif //JUDGE_RUNNER_H
