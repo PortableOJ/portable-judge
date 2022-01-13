@@ -18,7 +18,6 @@ private:
     static path problemPath;
     static path solutionPath;
     static path judgePath;
-    static path standardJudgePath;
 
     static SessionPool *sessionPool;
     static ThreadPool *threadPool;
@@ -56,7 +55,6 @@ bool FileManager::localStorage = false;
 path FileManager::problemPath("problem");                   // NOLINT
 path FileManager::solutionPath("solution");                 // NOLINT
 path FileManager::judgePath("judge");                       // NOLINT
-path FileManager::standardJudgePath("standardJudge");       // NOLINT
 
 SessionPool *FileManager::sessionPool = nullptr;
 ThreadPool *FileManager::threadPool = nullptr;
@@ -65,7 +63,17 @@ const Compiler *FileManager::cppCompiler = nullptr;
 bool FileManager::initStandardJudge() {
     CountMutex cm(0);
 
-    create_directories(judgePath / standardJudgePath);
+    /// region 获取 test lib
+
+    cm.reset(1);
+    auto testLibRequest = new TestLibRequest();
+    path testLibPath = judgePath /  constant.testlib;
+    auto testLibCallback = new Callback(testLibPath);
+    Job *getTestLibCode = new SocketWork(testLibRequest, testLibCallback, &cm);
+    sessionPool->submit(getTestLibCode);
+    cm.wait();
+
+    /// endregion
 
     /// region 获取标准 judge 程序列表
 
@@ -95,7 +103,7 @@ bool FileManager::initStandardJudge() {
     for (int i = 0; i < len; ++i) {
         const string &fileName = standardJudgeNameList[i];
         requestList[i] = new StandardJudgeCodeRequest(fileName);
-        standardJudgePathList[i] = judgePath / standardJudgePath / fileName;
+        standardJudgePathList[i] = judgePath / fileName;
         standardJudgePathList[i] += Judge.getExtension();
         callbackList[i] = new Callback(standardJudgePathList[i]);
         Job *getJudgeCode = new SocketWork(requestList[i], callbackList[i], &cm);
@@ -208,7 +216,7 @@ path FileManager::checkJudge(const string &judgeName, id problemId, bool &compil
 
         return curJudgePath;
     } else {
-        path curJudgePath = judgePath / standardJudgePath / judgeName;
+        path curJudgePath = judgePath / judgeName;
         return curJudgePath;
     }
 }

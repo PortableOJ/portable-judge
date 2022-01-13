@@ -228,6 +228,7 @@ struct Constant {
     const string memoryCost = "memoryCost";         // memoryCost
 
     const string useDiyJudge = "DIY";               // 使用非默认程序
+    const string testlib = "testlib.h";             // testlib 的保存文件名
 
     /// endregion
 

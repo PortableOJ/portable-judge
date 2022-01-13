@@ -18,6 +18,7 @@
 #include "model/solutionTestRequest.h"
 #include "model/standardJudgeCodeRequest.h"
 #include "model/standardJudgeRequest.h"
+#include "model/testLibRequest.h"
 
 #include "callback.h"
 #include "request.h"

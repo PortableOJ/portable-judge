@@ -20,6 +20,7 @@ namespace Api {
     const char *SolutionCodeRequest = "SolutionCode";
     const char *StandardJudgeRequest = "StandardJudge";
     const char *StandardJudgeCodeRequest = "StandardJudgeCode";
+    const char *TestLibRequest = "TestLibRequest";
     const char *ProblemJudgeCodeRequest = "ProblemJudgeCode";
     const char *ProblemDataInRequest = "ProblemDataIn";
     const char *ProblemDataOutRequest = "ProblemDataOut";

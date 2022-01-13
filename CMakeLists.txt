@@ -50,6 +50,7 @@ add_executable(main
         src/socket/model/solutionTestRequest.h
         src/socket/model/standardJudgeCodeRequest.h
         src/socket/model/standardJudgeRequest.h
+        src/socket/model/testLibRequest.h
 
         src/thread/__init__.h
         src/thread/job.h
@@ -64,10 +65,9 @@ add_executable(main
         src/util/timeoutMutex.h
         src/util/util.h
 
+        src/work/__init__.h
         src/work/judgeWork.h
         src/work/testWork.h
-        src/work/__init__.h
-
         )
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
