@@ -268,15 +268,15 @@ void JudgeWork::run() {
         }, &cm);
         Task *judgeRunningTask = new Task(this, [](void *data) {
             auto judgeWork = (JudgeWork *) data;
-            judgeWork->codeRunner->run(judgeWork->codePath,
-                                       judgeWork->pipes[input],
-                                       judgeWork->pipes[output],
-                                       judgeWork->pipes[codeError],
-                                       judgeWork->timeLimit,
-                                       judgeWork->memoryLimit,
-                                       judgeWork->testInPath.string(),
-                                       &judgeWork->report,
-                                       false
+            judgeWork->judgeRunner->run(judgeWork->judgePath,
+                                        judgeWork->pipes[input],
+                                        judgeWork->pipes[output],
+                                        judgeWork->pipes[codeError],
+                                        judgeWork->timeLimit,
+                                        judgeWork->memoryLimit,
+                                        judgeWork->testInPath.string(),
+                                        &judgeWork->report,
+                                        false
             );
         }, &cm);
         threadPool->submit(codeRunningTask);
