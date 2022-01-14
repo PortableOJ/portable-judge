@@ -18,13 +18,14 @@ private:
     const string params{};
     const string codeName{};
     const string extension{};
+    const string runningExtension{};
 
 public:
 
     const static Language *getLanguage(const string &name);
 
     Language(const string &name, string lang, string params, string codeName,
-             string extension);
+             string extension, string runningExtension);
 
     [[nodiscard]] const string &getName() const;
 
@@ -35,6 +36,8 @@ public:
     [[nodiscard]] const string &getCodeName() const;
 
     [[nodiscard]] const string &getExtension() const;
+
+    [[nodiscard]] const string &getRunningExtension() const;
 
     bool operator==(const Language &rhs) const;
 
@@ -51,8 +54,10 @@ const Language *Language::getLanguage(const string &name) {
     return nullptr;
 }
 
-Language::Language(const string &name, string lang, string params, string codeName, string extension)
-                   : name(name), lang(move(lang)), params(move(params)), codeName(move(codeName)), extension(move(extension)) {
+Language::Language(const string &name, string lang, string params, string codeName, string extension,
+                   string runningExtension)
+        : name(name), lang(move(lang)), params(move(params)), codeName(move(codeName)),
+          extension(move(extension)), runningExtension(move(runningExtension)) {
     languageMap.insert({name, this});
 }
 
@@ -74,6 +79,10 @@ const string &Language::getCodeName() const {
 
 const string &Language::getExtension() const {
     return extension;
+}
+
+const string &Language::getRunningExtension() const {
+    return runningExtension;
 }
 
 bool Language::operator==(const Language &rhs) const {

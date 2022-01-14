@@ -67,7 +67,7 @@ bool FileManager::initStandardJudge() {
 
     cm.reset(1);
     auto testLibRequest = new TestLibRequest();
-    path testLibPath = judgePath /  constant.testlib;
+    path testLibPath = judgePath / constant.testlib;
     auto testLibCallback = new Callback(testLibPath);
     Job *getTestLibCode = new SocketWork(testLibRequest, testLibCallback, &cm);
     sessionPool->submit(getTestLibCode);
@@ -188,7 +188,7 @@ path FileManager::createSolutionCode(id solutionId, const Language &language) {
     res += language.getExtension();
 
     SolutionCodeRequest request(solutionId);
-    Callback callback(res.string());
+    Callback callback(res.string(), [](void *data) {});
 
     CountMutex cm(1);
     auto socketWork = new SocketWork(&request, &callback, &cm);
@@ -201,16 +201,18 @@ path FileManager::createSolutionCode(id solutionId, const Language &language) {
 path FileManager::checkJudge(const string &judgeName, id problemId, bool &compileResult) {
     if (judgeName == constant.useDiyJudge) {
         path curJudgePath = judgePath / to_string(problemId);
-        curJudgePath.replace_extension(Judge.getExtension());
+        curJudgePath.replace_extension(Judge.getRunningExtension());
         if (exists(curJudgePath)) return curJudgePath;
 
-        curJudgePath += Judge.getExtension();
+        curJudgePath.replace_extension(Judge.getExtension());
         CountMutex cm(1);
         ProblemJudgeCodeRequest request(problemId);
-        Callback callback(curJudgePath);
+        Callback callback(curJudgePath, [](void *data) {});
         auto socketWork = new SocketWork(&request, &callback, &cm);
         sessionPool->submit(socketWork);
         cm.wait();
+
+        if (!exists(curJudgePath)) return curJudgePath;
 
         compileResult = cppCompiler->compile(curJudgePath, Judge.getParams());
 

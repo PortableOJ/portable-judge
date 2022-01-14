@@ -30,8 +30,8 @@ private:
 
     const Language *language;
     const Compiler *compiler;
-    Runner *codeRunner;
-    Runner *judgeRunner;
+    const Runner *codeRunner;
+    const Runner *judgeRunner;
 
     string judgeName;
     int testNum;
@@ -144,6 +144,9 @@ void JudgeWork::run() {
     /// endregion
 
     /// region 运行常用变量
+
+    codePath.replace_extension(language->getRunningExtension());
+    judgePath.replace_extension(Judge.getRunningExtension());
 
     codeRunner = RunnerFactory::getRunner(*language);
     judgeRunner = RunnerFactory::getRunner(Judge);
@@ -300,9 +303,6 @@ void JudgeWork::run() {
             break;
         }
     }
-
-    delete codeRunner;
-    delete codeRunner;
 }
 
 void JudgeWork::clean() {

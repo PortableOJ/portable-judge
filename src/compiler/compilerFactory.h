@@ -10,8 +10,11 @@
 #include "../language/__init__.h"
 
 class CompilerFactory {
+private:
+
     const static Compiler *c;
     const static Compiler *cpp;
+
 public:
     const static Compiler *getCompiler(const Language &lang);
 };
