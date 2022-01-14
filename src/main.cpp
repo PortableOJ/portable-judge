@@ -79,8 +79,8 @@ int main() {
     while (!terminate) {
         heartbeatCM.reset(1);
         heartbeatRequest.updateThread(threadPool->getAccumulation());
-        heartbeatRequest.updateSocket(workPool->getAccumulation());
-        heartbeatRequest.updateWork(socketPool->getAccumulation());
+        heartbeatRequest.updateSocket(socketPool->getAccumulation());
+        heartbeatRequest.updateWork(workPool->getAccumulation());
         socketPool->submit(&socketWork);
         heartbeatCM.wait();
         sleep(heartbeatTime);
