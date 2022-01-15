@@ -14,7 +14,8 @@ Language C11("C11", "C", "-std=gnu11", "main", ".c", "");           // NOLINT
 Language CPP98("CPP98", "CPP", "-std=c++98", "main", ".cpp", "");   // NOLINT
 Language CPP11("CPP11", "CPP", "-std=c++11", "main", ".cpp", "");   // NOLINT
 Language CPP14("CPP14", "CPP", "-std=c++14", "main", ".cpp", "");   // NOLINT
+Language CPP17("CPP17", "CPP", "-std=c++17", "main", ".cpp", "");   // NOLINT
 
-Language &Judge = CPP11;
+Language &Judge = CPP17;
 
 #endif //JUDGE_LANGUAGE_INIT_H

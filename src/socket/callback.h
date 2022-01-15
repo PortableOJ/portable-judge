@@ -7,6 +7,8 @@
 
 #include <utility>
 
+#include <iostream>
+
 #include "../util/__init__.h"
 
 const int bufferSize = 1024;

@@ -132,27 +132,37 @@ char *Logger::timer() {
 
 template<class... Args>
 void Logger::err(const string &msg, const Args &... args) {
+#if DEBUG_LEVEL <= 4
     Logger::logger->print("ERROR", msg, args...);
+#endif
 }
 
 template<class... Args>
 void Logger::warn(const string &msg, const Args &... args) {
+#if DEBUG_LEVEL <= 3
     Logger::logger->print("WARN", msg, args...);
+#endif
 }
 
 template<class... Args>
 void Logger::info(const string &msg, const Args &... args) {
+#if DEBUG_LEVEL <= 2
     Logger::logger->print("INFO", msg, args...);
+#endif
 }
 
 template<class... Args>
 void Logger::debug(const string &msg, const Args &... args) {
+#if DEBUG_LEVEL <= 1
     Logger::logger->print("DEBUG", msg, args...);
+#endif
 }
 
 template<class... Args>
 void Logger::trace(const string &msg, const Args &... args) {
+#if DEBUG_LEVEL <= 0
     Logger::logger->print("TRACE", msg, args...);
+#endif
 }
 
 /// endregion
