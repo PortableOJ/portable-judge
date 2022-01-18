@@ -15,7 +15,7 @@ public:
 /// region define
 
 SolutionInfoRequest::SolutionInfoRequest(id solutionId) : Request(Api::SolutionInfoRequest) {
-    this->set(constant.id, to_string(solutionId));
+    this->set(constant.id, solutionId);
 }
 
 /// endregion
