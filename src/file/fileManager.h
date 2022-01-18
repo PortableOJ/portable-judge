@@ -43,6 +43,8 @@ public:
 
     static path checkTestDataOut(id problemId, const string &name);
 
+    static void cleanSolution(id solutionId);
+
     static void cleanProblem(id problemId);
 };
 
@@ -251,6 +253,11 @@ path FileManager::checkTestDataOut(id problemId, const string &name) {
     cm.wait();
 
     return dataOut;
+}
+
+void FileManager::cleanSolution(id solutionId) {
+    path solution = solutionPath / to_string(solutionId);
+    remove_all(solution);
 }
 
 void FileManager::cleanProblem(id problemId) {

@@ -53,7 +53,7 @@ private:
 
     void run();
 
-    void clean();
+    void clean() const;
 
 public:
 
@@ -305,7 +305,8 @@ void JudgeWork::run() {
     }
 }
 
-void JudgeWork::clean() {
+void JudgeWork::clean() const {
+    FileManager::cleanSolution(solutionId);
 }
 
 JudgeWork::JudgeWork(id solutionId, ThreadPool *tp, SessionPool *sp)
