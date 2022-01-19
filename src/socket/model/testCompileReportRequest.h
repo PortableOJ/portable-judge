@@ -7,14 +7,14 @@
 
 #include "../request.h"
 
-class TestResultReportRequest : public Request {
+class TestCompileReportRequest : public Request {
 public:
-    TestResultReportRequest(id problemId, bool result);
+    TestCompileReportRequest(id problemId, bool result);
 };
 
 /// region define
 
-TestResultReportRequest::TestResultReportRequest(id problemId, bool result)
+TestCompileReportRequest::TestCompileReportRequest(id problemId, bool result)
         : Request(Api::TestResultReportRequest) {
     this->set(constant.id, problemId);
     this->set(constant.value, result);
