@@ -223,7 +223,8 @@ struct Constant {
     const string msg = "msg";                       // msg
     const string value = "value";                   // value
     const string judge = "judge";                   // judge
-    const string pos = "pos";                     // type
+    const string flag = "flag";                     // judge
+    const string pos = "pos";                       // type
     const string timeCost = "timeCost";             // timeCost
     const string memoryCost = "memoryCost";         // memoryCost
 

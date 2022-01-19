@@ -236,10 +236,10 @@ void JudgeWork::run() {
 
         /// region 运行
 
-        if ((pipes[input][0] = open(testInPath.c_str(), O_RDONLY)) == -1
-            || pipe(pipes[output]) == -1
-            || pipe(pipes[codeError]) == -1
-            || pipe(pipes[judgeError]) == -1) {
+        if ((pipes[STD::input][0] = open(testInPath.c_str(), O_RDONLY)) == -1
+            || pipe(pipes[STD::output]) == -1
+            || pipe(pipes[STD::codeError]) == -1
+            || pipe(pipes[STD::judgeError]) == -1) {
 
             for (auto &pipe: pipes) {
                 for (int &pid: pipe) {
@@ -251,35 +251,35 @@ void JudgeWork::run() {
             }
 
             resultEnum = JudgeResultEnum::SystemError;
-            reportResult(pipes[judgeError][0]);
+            reportResult(pipes[STD::judgeError][0]);
             return;
         }
 
         cm.reset(2);
         Task *codeRunningTask = new Task(this, [](void *data) {
             auto judgeWork = (JudgeWork *) data;
-            judgeWork->codeRunner->run(judgeWork->codePath,
-                                       judgeWork->pipes[input],
-                                       judgeWork->pipes[output],
-                                       judgeWork->pipes[codeError],
-                                       judgeWork->timeLimit,
-                                       judgeWork->memoryLimit,
-                                       "",
-                                       &judgeWork->report,
-                                       false
+            judgeWork->codeRunningResult = judgeWork->codeRunner->run(judgeWork->codePath,
+                                                                      judgeWork->pipes[STD::input],
+                                                                      judgeWork->pipes[STD::output],
+                                                                      judgeWork->pipes[STD::codeError],
+                                                                      judgeWork->timeLimit,
+                                                                      judgeWork->memoryLimit,
+                                                                      "",
+                                                                      &judgeWork->report,
+                                                                      false
             );
         }, &cm);
         Task *judgeRunningTask = new Task(this, [](void *data) {
             auto judgeWork = (JudgeWork *) data;
-            judgeWork->judgeRunner->run(judgeWork->judgePath,
-                                        judgeWork->pipes[input],
-                                        judgeWork->pipes[output],
-                                        judgeWork->pipes[codeError],
-                                        judgeWork->timeLimit,
-                                        judgeWork->memoryLimit,
-                                        judgeWork->testInPath.string(),
-                                        &judgeWork->report,
-                                        false
+            judgeWork->judgeRunningResult = judgeWork->judgeRunner->run(judgeWork->judgePath,
+                                                                        judgeWork->pipes[STD::output],
+                                                                        judgeWork->pipes[STD::input],
+                                                                        judgeWork->pipes[STD::judgeError],
+                                                                        judgeWork->timeLimit,
+                                                                        judgeWork->memoryLimit,
+                                                                        judgeWork->testInPath.string(),
+                                                                        nullptr,
+                                                                        false
             );
         }, &cm);
         threadPool->submit(codeRunningTask);
@@ -288,7 +288,7 @@ void JudgeWork::run() {
 
         /// endregion
 
-        reportResult(pipes[judgeError][0]);
+        reportResult(pipes[STD::judgeError][0]);
 
         for (auto &pipe: pipes) {
             for (int &pid: pipe) {

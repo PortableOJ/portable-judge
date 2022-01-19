@@ -54,8 +54,6 @@ using namespace std::filesystem;
 
 typedef unsigned long id;
 
-int input = 0, output = 1, codeError = 2, judgeError = 3;
-
 namespace STD {
     const unsigned long B = 1;
     const unsigned long KB = 1024 * B;
@@ -66,6 +64,13 @@ namespace STD {
     const int s = 1000 * ms;
     const int m = 60 * s;
     const int h = 60 * m;
+
+
+    const int input = 0;
+    const int output = 1;
+    const int codeError = 2;
+    const int judgeError = 3;
+
 }
 
 #ifdef __APPLE__
