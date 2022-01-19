@@ -11,8 +11,6 @@
 #include "../runner/__init__.h"
 #include "../socket/__init__.h"
 
-int input = 0, output = 1, codeError = 2, judgeError = 3;
-
 class JudgeWork {
 private:
     JudgeResultEnum resultEnum;
@@ -129,7 +127,9 @@ void JudgeWork::run() {
     compiler->collectCompileInfo(codePath, *compileMsg);
     auto solutionCompileMsgReportRequest = new SolutionCompileMsgReportRequest(
             solutionId, codeCompileSuccess, judgeCompileSuccess, *compileMsg);
-    auto compileMsgCallback = new Callback(nullptr, [&](void *data, stringstream &ss) {});
+    auto compileMsgCallback = new Callback(nullptr, [&](void *data, stringstream &ss) {}, [](void *data) {
+        ((JudgeWork *) data)->stopJudge = true;
+    });
     auto socketWork = new SocketWork(solutionCompileMsgReportRequest, compileMsgCallback, &cm);
     sessionPool->submit(socketWork);
     cm.wait();
@@ -137,7 +137,7 @@ void JudgeWork::run() {
     delete compileMsg;
     delete solutionCompileMsgReportRequest;
     delete compileMsgCallback;
-    if (!codeCompileSuccess || !judgeCompileSuccess) {
+    if (!codeCompileSuccess || !judgeCompileSuccess || stopJudge) {
         return;
     }
 

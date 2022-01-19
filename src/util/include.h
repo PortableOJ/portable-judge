@@ -54,6 +54,8 @@ using namespace std::filesystem;
 
 typedef unsigned long id;
 
+int input = 0, output = 1, codeError = 2, judgeError = 3;
+
 namespace STD {
     const unsigned long B = 1;
     const unsigned long KB = 1024 * B;
