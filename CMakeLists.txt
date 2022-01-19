@@ -53,8 +53,9 @@ add_executable(main
         src/socket/model/testInfoRequest.h
         src/socket/model/testLibRequest.h
         src/socket/model/testReportOutputRequest.h
-        src/socket/model/testResultReportRequest.h
+        src/socket/model/testCompileReportRequest.h
         src/socket/model/testStdCodeRequest.h
+        src/socket/model/testTestRequest.h
 
         src/thread/__init__.h
         src/thread/job.h
