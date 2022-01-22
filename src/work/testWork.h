@@ -93,15 +93,15 @@ void TestWork::run() {
     compiler = CompilerFactory::getCompiler(*language);
     runner = RunnerFactory::getRunner(*language);
     fail = !compiler->compile(codePath, language->getParams());
-    TestCompileReportRequest testCompileReportRequest(problemId, !fail);
-    Callback compileMsgCallback(this, [](void *data, stringstream &ss) {}, [](void *data) {
-        ((TestWork *) data)->fail = true;
-    });
-    cm.reset(1);
-    auto socketWork = new SocketWork(&testCompileReportRequest, &compileMsgCallback, &cm);
-    sessionPool->submit(socketWork);
-    cm.wait();
     if (fail) {
+        TestCompileReportRequest testCompileReportRequest(problemId, !fail);
+        Callback compileMsgCallback(this, [](void *data, stringstream &ss) {}, [](void *data) {
+            ((TestWork *) data)->fail = true;
+        });
+        cm.reset(1);
+        auto socketWork = new SocketWork(&testCompileReportRequest, &compileMsgCallback, &cm);
+        sessionPool->submit(socketWork);
+        cm.wait();
         return;
     }
 
@@ -229,6 +229,17 @@ void TestWork::run() {
         if (fail) {
             break;
         }
+    }
+
+    if (!fail) {
+        TestReportOver testReportOver(problemId);
+        Callback testCallback(this,
+                              [](void *data, stringstream &ss) {},
+                              [](void *data) {});
+        SocketWork *testOverWork = new SocketWork(&testReportOver, &testCallback, &cm);
+        cm.reset(1);
+        sessionPool->submit(testOverWork);
+        cm.wait();
     }
 }
 

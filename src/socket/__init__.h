@@ -23,6 +23,7 @@
 #include "model/testReportOutputRequest.h"
 #include "model/testCompileReportRequest.h"
 #include "model/testStdCodeRequest.h"
+#include "model/testReportOver.h"
 #include "model/testTestRequest.h"
 
 #include "callback.h"

@@ -25,6 +25,7 @@ namespace Api {
     const char *TestReportOutputRequest = "TestReportOutput";
     const char *TestResultReportRequest = "TestResultReport";
     const char *TestTestRequest = "TestTest";
+    const char *TestReportOverRequest = "TestReportOver";
     const char *TestLibRequest = "TestLibRequest";
     const char *ProblemJudgeCodeRequest = "ProblemJudgeCode";
     const char *ProblemDataInRequest = "ProblemDataIn";
