@@ -236,7 +236,7 @@ void TestWork::run() {
         Callback testCallback(this,
                               [](void *data, stringstream &ss) {},
                               [](void *data) {});
-        SocketWork *testOverWork = new SocketWork(&testReportOver, &testCallback, &cm);
+        auto *testOverWork = new SocketWork(&testReportOver, &testCallback, &cm);
         cm.reset(1);
         sessionPool->submit(testOverWork);
         cm.wait();
@@ -261,7 +261,6 @@ void TestWork::start() {
     }
     clean();
 }
-
 /// endregion
 
 #endif //JUDGE_TEST_WORK_H
