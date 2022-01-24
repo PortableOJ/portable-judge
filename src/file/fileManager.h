@@ -288,7 +288,9 @@ path FileManager::checkTestDataOut(id problemId, const string &name) {
 }
 
 path FileManager::getTestDataOutPath(id problemId, const string &name) {
-    return problemPath / to_string(problemId) / name;
+    path dataOut = problemPath / to_string(problemId) / name;
+    dataOut += ".out";
+    return dataOut;
 }
 
 void FileManager::cleanSolution(id solutionId) {

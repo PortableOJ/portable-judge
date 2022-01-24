@@ -35,6 +35,7 @@ int main() {
     auto *workPool = new ThreadPool(env->getInt(constant.initWorkCore));
     auto socketPool = new SessionPool(env->getInt(constant.initSocketCore));
     threadPool->init();
+    workPool->init();
     socketPool->init();
     FileManager fileManager;
     bool fileManagerResult = fileManager.init(socketPool, threadPool);
@@ -61,6 +62,7 @@ int main() {
             } else if (key == constant.testTask) {
                 auto task = new Task((void *) value, [&](void *data) {
                     TestWork testWork((id) value, threadPool, socketPool);
+                    Logger::trace("problem ID: %", (id) value);
                     testWork.start();
                 });
                 workPool->submit(task);

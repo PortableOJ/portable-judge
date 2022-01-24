@@ -181,7 +181,7 @@ void TestWork::run() {
         /// endregion
 
         if ((pipes[STD::input][0] = open(testInPath.c_str(), O_RDONLY)) == -1
-            || (pipes[STD::output][1] = open(testOutPath.c_str(), O_WRONLY)) == -1
+            || (pipes[STD::output][1] = open(testOutPath.c_str(), O_WRONLY | O_CREAT)) == -1
             || pipe(pipes[STD::codeError]) == -1) {
 
             for (auto &pipe: pipes) {
