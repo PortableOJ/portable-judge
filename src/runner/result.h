@@ -22,4 +22,19 @@ enum class JudgeResultEnum : int {
     WrongAnswer = 11,
 };
 
+const char *judgeResultEnumString[] = {
+        "ACCEPT",
+        "SYSTEM_ERROR",
+        "RUNTIME_ERROR",
+        "TIME_LIMIT_EXCEEDED",
+        "SEGMENT_FAIL",
+        "ERRONEOUS_ARITHMETIC_OPERATION",
+        "ILLEGAL_SYSTEM_CAL",
+        "RETURN_NOT_ZERO",
+        "COMPILE_ERROR",
+        "JUDGE_COMPILE_ERROR",
+        "JUDGE_FAIL",
+        "WRONG_ANSWER"
+};
+
 #endif //JUDGE_RESULT_H

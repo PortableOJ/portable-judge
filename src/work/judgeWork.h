@@ -95,7 +95,6 @@ bool JudgeWork::init() {
         return false;
     }
     FileManager::createSolutionDir(solutionId);
-    FileManager::createSolutionCode(solutionId, *language);
     FileManager::checkProblemDir(problemId);
     return true;
 }
@@ -280,13 +279,13 @@ void JudgeWork::run() {
             auto judgeWork = (JudgeWork *) data;
             judgeWork->judgeRunningResult = judgeWork->judgeRunner->run(judgeWork->judgePath,
                                                                         judgeWork->pipes[STD::output],
-                                                                        judgeWork->pipes[STD::input],
+                                                                        nullptr,
                                                                         judgeWork->pipes[STD::judgeError],
                                                                         judgeWork->timeLimit,
                                                                         judgeWork->memoryLimit,
                                                                         judgeWork->testInPath.string(),
                                                                         nullptr,
-                                                                        false
+                                                                        true
             );
         }, &cm);
         threadPool->submit(codeRunningTask);

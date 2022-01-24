@@ -6,14 +6,12 @@
 #define JUDGE_SOLUTION_REPORT_REQUEST_H
 
 #include "../request.h"
+#include "../../runner/result.h"
 
 class SolutionTestReportRequest : public Request {
 public:
 
     SolutionTestReportRequest();
-
-    SolutionTestReportRequest(int value, id solutionId, const string &msg,
-                              unsigned long timeCost, unsigned long memoryCost);
 
     void setValue(int value);
 
@@ -30,18 +28,8 @@ public:
 
 SolutionTestReportRequest::SolutionTestReportRequest() : Request(Api::SolutionTestReportRequest) {}
 
-SolutionTestReportRequest::SolutionTestReportRequest(
-        int value, id solutionId, const string &msg, unsigned long timeCost, unsigned long memoryCost)
-        : Request(Api::SolutionTestReportRequest) {
-    this->set(constant.value, value);
-    this->set(constant.id, solutionId);
-    this->setComplex(constant.msg, msg);
-    this->set(constant.timeCost, timeCost);
-    this->set(constant.memoryCost, memoryCost);
-}
-
 void SolutionTestReportRequest::setValue(int value) {
-    this->set(constant.value, value);
+    this->set(constant.value, judgeResultEnumString[value]);
 }
 
 void SolutionTestReportRequest::setSolutionId(id solutionId) {

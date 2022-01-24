@@ -146,6 +146,7 @@ void TestWork::run() {
                     cm.wait();
                     flag = true;
                 }
+                close(fid);
             }
             if (!flag) {
                 cm.reset(1);

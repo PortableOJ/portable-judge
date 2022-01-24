@@ -253,6 +253,7 @@ path FileManager::checkJudge(const string &judgeName, id problemId, bool &compil
         return curJudgePath;
     } else {
         path curJudgePath = judgePath / judgeName;
+        compileResult = true;
         return curJudgePath;
     }
 }
@@ -274,7 +275,6 @@ path FileManager::checkTestDataIn(id problemId, const string &name) {
 
 path FileManager::checkTestDataOut(id problemId, const string &name) {
     path dataOut = getTestDataOutPath(problemId, name);
-    dataOut += ".out";
     if (exists(dataOut)) return dataOut;
 
     CountMutex cm(1);

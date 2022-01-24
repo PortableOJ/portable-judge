@@ -16,7 +16,7 @@ struct Report {
 };
 
 class Runner {
-public:
+private:
     static unsigned long xOrShf96();
 
     static unsigned long maxRunningRealTime;
@@ -196,6 +196,19 @@ JudgeResultEnum Runner::run(const path &code,
         runCode(code, input, output, error, limitTime, limitMemory, params, randomCode, allowOpenFile);
         return JudgeResultEnum::SystemError;
     } else {
+
+        if (input != nullptr && input[0] != -1) {
+            close(input[0]);
+        }
+
+        if (output != nullptr && output[1] != -1) {
+            close(output[1]);
+        }
+
+        if (error != nullptr && error[1] != -1) {
+            close(error[1]);
+        }
+
         return trace(pid, randomCode, error, report);
     }
 }
