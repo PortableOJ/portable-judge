@@ -60,6 +60,9 @@ Logger::Logger() : out("judge.log"), timeStr() {}
 void Logger::print(const string &msg, int offset) {
     for (int i = offset; i < msg.size(); ++i) Logger::out << msg[i];
     Logger::out << endl;
+#if DEBUG_LEVEL <= 1
+    Logger::out.flush();
+#endif
 }
 
 template<class T>
