@@ -159,6 +159,13 @@ void TestWork::run() {
         cm.wait();
     };
 
+    // 初始化所有的 pipe
+    for (auto &pipe: pipes) {
+        for (int &pid: pipe) {
+            pid = -1;
+        }
+    }
+
     for (int i = 0; i < testNum; ++i) {
         cm.reset(1);
         sessionPool->submit(&testTestWork);
@@ -181,7 +188,7 @@ void TestWork::run() {
         /// endregion
 
         if ((pipes[STD::input][0] = open(testInPath.c_str(), O_RDONLY)) == -1
-            || (pipes[STD::output][1] = open(testOutPath.c_str(), O_WRONLY | O_CREAT)) == -1
+            || (pipes[STD::output][1] = open(testOutPath.c_str(), O_WRONLY | O_CREAT, 0666)) == -1
             || pipe(pipes[STD::codeError]) == -1) {
 
             for (auto &pipe: pipes) {
@@ -198,7 +205,8 @@ void TestWork::run() {
             return;
         }
 
-        cm.reset(1);
+        codePath.replace_extension(language->getRunningExtension());
+
         Task *codeRunTask = new Task(this, [](void *data) {
             auto testWork = (TestWork *) data;
             testWork->codeRunningResult = testWork->runner->run(testWork->codePath,
@@ -212,6 +220,7 @@ void TestWork::run() {
                                                                 false
             );
         }, &cm);
+        cm.reset(1);
         threadPool->submit(codeRunTask);
         cm.wait();
 

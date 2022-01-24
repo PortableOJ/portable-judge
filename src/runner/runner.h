@@ -16,7 +16,7 @@ struct Report {
 };
 
 class Runner {
-private:
+public:
     static unsigned long xOrShf96();
 
     static unsigned long maxRunningRealTime;
@@ -84,18 +84,18 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
                      const string &params,
                      unsigned long randomCode, bool allowOpenFile) const {
     if (input != nullptr) {
-        if (input[0] != -1) dup2(input[0], 0);
+        if (input[0] != -1) dup2(input[0], STDIN_FILENO);
         if (input[1] != -1) close(input[1]);
     }
 
     if (output != nullptr) {
         if (output[0] != -1) close(output[0]);
-        if (output[1] != -1) dup2(output[1], 1);
+        if (output[1] != -1) dup2(output[1], STDOUT_FILENO);
     }
 
     if (error != nullptr) {
         if (error[0] != -1) close(error[0]);
-        if (error[1] != -1) dup2(error[1], 2);
+        if (error[1] != -1) dup2(error[1], STDERR_FILENO);
     }
 
     auto ctxFail = [&](int syscall) {
@@ -105,7 +105,7 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
         exit(1);
     };
 
-    rlimit timeLimit{limitTime, limitTime + 1};
+    rlimit timeLimit{limitTime, limitTime};
     rlimit memLimit{limitMemory, limitMemory};
     setrlimit(RLIMIT_CPU, &timeLimit);
     setrlimit(RLIMIT_AS, &memLimit);

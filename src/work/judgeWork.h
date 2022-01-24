@@ -207,6 +207,13 @@ void JudgeWork::run() {
         cm.wait();
     };
 
+    // 初始化所有的 pipe
+    for (auto &pipe: pipes) {
+        for (int &pid: pipe) {
+            pid = -1;
+        }
+    }
+
     /// endregion
 
     for (int i = 0; i < testNum; ++i) {
