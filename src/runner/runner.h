@@ -17,7 +17,6 @@ struct Report {
 
 class Runner {
 private:
-    static unsigned long xOrShf96();
 
     static unsigned long maxRunningRealTime;
 
@@ -36,10 +35,9 @@ private:
     void runCode(const path &code,
                  int *input, int *output, int *error,
                  unsigned long limitTime, unsigned long limitMemory,
-                 const string &params,
-                 unsigned long randomCode, bool allowOpenFile) const;
+                 const string &params, bool allowOpenFile) const;
 
-    static JudgeResultEnum trace(int pid, unsigned long randomCode, int *error, Report *report);
+    static JudgeResultEnum trace(int pid, int *error, Report *report);
 
 protected:
     virtual void addRule(const path &code, scmp_filter_ctx &ctx, function<void(int)> systemError) const = 0;
@@ -64,25 +62,9 @@ public:
 
 unsigned long Runner::maxRunningRealTime = 60000 / STD::s;
 
-unsigned long Runner::xOrShf96() {
-    static unsigned long x = 123456789, y = 362436069, z = 521288629;
-    unsigned long t;
-    x ^= x << 16;
-    x ^= x >> 5;
-    x ^= x << 1;
-
-    t = x;
-    x = y;
-    y = z;
-    z = t ^ x ^ y;
-
-    return z;
-}
-
 void Runner::runCode(const path &code, int *input, int *output, int *error,
                      unsigned long limitTime, unsigned long limitMemory,
-                     const string &params,
-                     unsigned long randomCode, bool allowOpenFile) const {
+                     const string &params, bool allowOpenFile) const {
     if (input != nullptr) {
         if (input[0] != -1) dup2(input[0], STDIN_FILENO);
         if (input[1] != -1) close(input[1]);
@@ -99,12 +81,11 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
     }
 
     auto ctxFail = [&](int syscall) {
-        string str = to_string(randomCode);
         Logger::err("Seccomp rule add fail: %", syscall);
-        if (error != nullptr && error[1] != -1) write(error[1], str.c_str(), str.size());
+        if (error != nullptr && error[1] != -1) write(error[1], "1\n", 2);
         exit(1);
     };
-
+#ifdef __linux__
     rlimit timeLimit{limitTime, limitTime};
     rlimit memLimit{limitMemory, limitMemory};
     setrlimit(RLIMIT_CPU, &timeLimit);
@@ -140,13 +121,14 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
 
     if (seccomp_load(ctx)) ctxFail(10000);
     seccomp_release(ctx);
+#endif
     if (error != nullptr && error[1] != -1) write(error[1], "0\n", 2);
 
     exec(code, params);
     ctxFail(-1);
 }
 
-JudgeResultEnum Runner::trace(int pid, unsigned long randomCode, int *error, Report *report) {
+JudgeResultEnum Runner::trace(int pid, int *error, Report *report) {
     TimeoutMutex timeoutMutex;
     int exitCode;
     rusage usage{};
@@ -162,7 +144,7 @@ JudgeResultEnum Runner::trace(int pid, unsigned long randomCode, int *error, Rep
     bool systemFail;
     if (error != nullptr) {
         int code = readInt(error[0]);
-        systemFail = code == randomCode;
+        systemFail = code != 0;
     }
     if (status)
         return exitCode == 0 ? JudgeResultEnum::Accept :
@@ -189,11 +171,9 @@ JudgeResultEnum Runner::run(const path &code,
                             unsigned long limitTime, unsigned long limitMemory,
                             const string &params,
                             Report *report, bool allowOpenFile) const {
-    // 需要一个随机数，保证不为 0 or 1 即可
-    unsigned long randomCode = xOrShf96() % 100000 + 2;
     int pid = fork();
     if (pid == 0) {
-        runCode(code, input, output, error, limitTime, limitMemory, params, randomCode, allowOpenFile);
+        runCode(code, input, output, error, limitTime, limitMemory, params, allowOpenFile);
         return JudgeResultEnum::SystemError;
     } else {
 
@@ -209,7 +189,7 @@ JudgeResultEnum Runner::run(const path &code,
             close(error[1]);
         }
 
-        return trace(pid, randomCode, error, report);
+        return trace(pid, error, report);
     }
 }
 

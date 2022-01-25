@@ -26,10 +26,11 @@ void CppRunner::addRule(const path &code, scmp_filter_ctx &ctx, function<void(in
 //        if (chdir("/") == -1) {
 //            systemError(SCMP_SYS(chdir));
 //        };
-
+#ifdef __linux__
     if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0,
                          SCMP_A0(SCMP_CMP_EQ, (scmp_datum_t) code.c_str())))
         systemError(SCMP_SYS(execve));
+#endif
 }
 
 void CppRunner::exec(const path &code, const string &params) const {

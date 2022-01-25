@@ -68,7 +68,6 @@ bool TestWork::init() {
                 ss >> testWork->testNum;
             } else if (key == constant.timeLimit) {
                 ss >> testWork->timeLimit;
-                testWork->timeLimit /= STD::s;
             } else if (key == constant.memoryLimit) {
                 ss >> testWork->memoryLimit;
                 testWork->memoryLimit *= STD::MB;
