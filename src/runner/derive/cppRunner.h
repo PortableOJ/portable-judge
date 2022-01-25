@@ -19,7 +19,7 @@ public:
 
 /// region define
 
-void CppRunner::addRule(const path &code, int &ctx, function<void(int)> systemError) const {
+void CppRunner::addRule(const path &code, scmp_filter_ctx &ctx, function<void(int)> systemError) const {
 //        if (chroot(code.parent_path().c_str()) == -1) {
 //            systemError(SCMP_SYS(chroot));
 //        }

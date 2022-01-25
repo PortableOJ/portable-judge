@@ -80,8 +80,10 @@ bool JudgeWork::init() {
                 ss >> judgeWork->testNum;
             } else if (key == constant.timeLimit) {
                 ss >> judgeWork->timeLimit;
+                judgeWork->timeLimit /= STD::s;
             } else if (key == constant.memoryLimit) {
                 ss >> judgeWork->memoryLimit;
+                judgeWork->memoryLimit *= STD::MB;
             }
         }
     }, [](void *data) {

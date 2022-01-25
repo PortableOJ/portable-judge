@@ -9,9 +9,9 @@
 #include "result.h"
 
 struct Report {
-    // 毫秒
+    // ms
     unsigned long timeCost;
-    // MB
+    // KB
     unsigned long memoryCost;
 };
 
@@ -157,7 +157,7 @@ JudgeResultEnum Runner::trace(int pid, unsigned long randomCode, int *error, Rep
     if (report != nullptr) {
         report->timeCost = usage.ru_utime.tv_sec * 1000 + usage.ru_utime.tv_usec / 1000 +
                            usage.ru_stime.tv_sec * 1000 + usage.ru_stime.tv_usec / 1000;
-        report->memoryCost = usage.ru_maxrss / 1024;
+        report->memoryCost = usage.ru_maxrss;
     }
     bool systemFail;
     if (error != nullptr) {

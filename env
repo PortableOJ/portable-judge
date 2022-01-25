@@ -5,9 +5,9 @@ initThreadCore=10
 initWorkCore=5
 ===================其他配置========================
 = 是否是本地存储（若为本地存储则不会接受数据清理命令）
-localStorage=true
+localStorage=false
 = 存储的主目录
-home=/Users/shiroha/portable
+home=/home/shiroha/portable
 ===================连接池配置======================
 = 初始的 TCP 长连接数
 initSocketCore=1
@@ -15,7 +15,7 @@ initSocketCore=1
 heartbeatTime=1
 ===================server 相关配置=================
 = server 服务器的 url 地址
-serverUrl=localhost
+serverUrl=192.168.2.110
 = server 服务器的 port
 serverPort=9090
 = server 的密钥
