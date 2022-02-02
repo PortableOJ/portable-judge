@@ -13,15 +13,13 @@ MAINTAINER Shiroha "keqing.hu@icloud.com"
 #  ln -s /usr/local/cjudger/venv/py3/bin/python3 /usr/local/cjudger/py3 && \
 #  rm -rf /var/lib/apt/lists/*
 
-RUN ls ./
-
 #RUN \
 #  apt update && \
 ##  apt -y upgrade && \
 #  apt -y install gcc g++
 #
 #
-#COPY ./portable /portable
+COPY portable /portable-judge
 #WORKDIR /portable
 #
 #CMD ./main
