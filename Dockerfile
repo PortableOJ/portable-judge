@@ -19,6 +19,6 @@ RUN \
   apt -y install gcc g++
 
 ARG BIN_DIR=bin
-WORKDIR ${BIN_DIR}
+WORKDIR ./${BIN_DIR}
 
-CMD ./main
+CMD top
