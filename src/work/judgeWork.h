@@ -63,6 +63,7 @@ public:
 /// region define
 
 bool JudgeWork::init() {
+    Logger::trace("start for solution: %", solutionId);
     SolutionInfoRequest solutionInfoRequest(solutionId);
     Callback callback(this, [](void *data, stringstream &ss) {
         auto judgeWork = (JudgeWork *) data;
@@ -305,7 +306,7 @@ void JudgeWork::run() {
                 }
             }
         }
-
+        Logger::trace("Finish for solution: %, stopJudge: %", solutionId, stopJudge);
         if (stopJudge) {
             break;
         }

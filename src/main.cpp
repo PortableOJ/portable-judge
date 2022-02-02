@@ -54,15 +54,16 @@ int main() {
             if (key == constant.terminate) {
                 terminate = true;
             } else if (key == constant.judgeTask) {
+                Logger::trace("add judge job %", value);
                 auto task = new Task((void *) value, [&](void *data) {
-                    JudgeWork judgeWork((id) value, threadPool, socketPool);
+                    JudgeWork judgeWork((id) data, threadPool, socketPool);
                     judgeWork.start();
                 });
                 workPool->submit(task);
             } else if (key == constant.testTask) {
+                Logger::trace("add test job %", value);
                 auto task = new Task((void *) value, [&](void *data) {
-                    TestWork testWork((id) value, threadPool, socketPool);
-                    Logger::trace("problem ID: %", (id) value);
+                    TestWork testWork((id) data, threadPool, socketPool);
                     testWork.start();
                 });
                 workPool->submit(task);
