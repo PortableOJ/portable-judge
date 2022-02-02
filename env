@@ -7,7 +7,7 @@ initWorkCore=5
 = 是否是本地存储（若为本地存储则不会接受数据清理命令）
 localStorage=true
 = 存储的主目录
-home=/Users/shiroha/portable
+home=/root/portable
 ===================连接池配置======================
 = 初始的 TCP 长连接数
 initSocketCore=1

@@ -16,6 +16,10 @@ struct Report {
 };
 
 class Runner {
+public:
+
+    static void init();
+
 private:
 
     static unsigned long maxRunningRealTime;
@@ -61,6 +65,13 @@ public:
 /// region define
 
 unsigned long Runner::maxRunningRealTime = 60000 / STD::s;
+
+void Runner::init() {
+    int tmp = Env::ctx()->getInt(constant.runningRealMaxTime);
+    if (tmp != 0) {
+        Runner::maxRunningRealTime = tmp / STD::s;
+    }
+}
 
 void Runner::runCode(const path &code, int *input, int *output, int *error,
                      unsigned long limitTime, unsigned long limitMemory,

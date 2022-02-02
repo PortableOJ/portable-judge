@@ -9,18 +9,23 @@
 
 class Compiler {
 protected:
-    static bool doCmd(const char *cmd, string &res) ;
+    static bool doCmd(const char *cmd, string &res);
 
 public:
+
     static unsigned long compileMaxTime;
     static unsigned long compileRealMaxTime;
     static unsigned long compileMaxMemory;
     static unsigned long compileFileSize;
 
+    static void init();
+
     [[nodiscard]] virtual bool compile(const path &code, const string &param) const = 0;
 
     virtual void collectCompileInfo(const path &code, string &result) const = 0;
 };
+
+/// region define
 
 unsigned long Compiler::compileMaxTime = 30000 / STD::s;        // s
 unsigned long Compiler::compileRealMaxTime = 60000 / STD::s;    // s
@@ -40,5 +45,27 @@ bool Compiler::doCmd(const char *cmd, string &res) {
     res = to_string(res.length()) + '\n' + res + '\n';
     return true;
 }
+
+void Compiler::init() {
+    Env *env = Env::ctx();
+    int tmp = env->getInt(constant.compileMaxTime);
+    if (tmp != 0) {
+        Compiler::compileMaxTime = tmp / STD::s;
+    }
+    tmp = env->getInt(constant.compileRealMaxTime);
+    if (tmp != 0) {
+        Compiler::compileRealMaxTime = tmp / STD::s;
+    }
+    tmp = env->getInt(constant.compileMaxMemory);
+    if (tmp != 0) {
+        Compiler::compileMaxMemory = tmp / STD::s;
+    }
+    tmp = env->getInt(constant.compileFileSize);
+    if (tmp != 0) {
+        Compiler::compileFileSize = tmp / STD::s;
+    }
+}
+
+/// endregion
 
 #endif //JUDGE_COMPILER_H

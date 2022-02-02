@@ -68,15 +68,18 @@ Env::Node Env::getType(const string &value) {
     auto toChar = [&](Node &node) {
         if (value.size() != 1) return false;
         node.c = value[0];
+        Logger::debug("get env value: %", node.c);
         return true;
     };
 
     auto toBool = [&](Node &node) {
         if (value == "true") {
             node.b = true;
+            Logger::debug("get env value: true");
             return true;
         } else if (value == "false") {
             node.b = false;
+            Logger::debug("get env value: false");
             return true;
         }
         return false;
@@ -92,12 +95,14 @@ Env::Node Env::getType(const string &value) {
             tmp += value[i] - '0';
         }
         node.i = tmp * (flag ? -1 : 1);
+        Logger::debug("get env value: %", node.i);
         return true;
     };
 
     auto toPtr = [&](Node &node) {
         auto *ptr = new string(value);
         node.ptr = ptr;
+        Logger::debug("get env value: %", value);
         return true;
     };
 
@@ -124,6 +129,11 @@ Env::Env(const string &file) {
     string key, value;
     while (getline(in, key, '=') && getline(in, value)) {
         if (key.empty()) continue;
+        Logger::debug("get env key: %", key);
+        const char *envValue = getenv(key.c_str());
+        if (envValue != nullptr) {
+            value = envValue;
+        }
         Node type = getType(value);
         data.insert({key, type});
     }
@@ -199,6 +209,7 @@ struct Constant {
     const string compileRealMaxTime = "compileRealMaxTime";
     const string compileMaxMemory = "compileMaxMemory";
     const string compileFileSize = "compileFileSize";
+    const string runningRealMaxTime = "runningRealMaxTime";
 
     const string heartbeatTime = "heartbeatTime";
 
@@ -216,7 +227,7 @@ struct Constant {
 
     const string threadAccumulation = "threadAccumulation"; // 线程池堆积
     const string socketAccumulation = "socketAccumulation"; // 连接池堆积
-    const string workAccumulation = "workAccumulation"; // 连接池堆积
+    const string workAccumulation = "workAccumulation";     // 连接池堆积
 
     const string name = "name";                     // 名称
     const string id = "id";                         // ID

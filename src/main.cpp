@@ -14,6 +14,9 @@ int main() {
     Env::init("env");
     Env *env = Env::ctx();
 
+    Runner::init();
+    Compiler::init();
+
     FileManager::setHome();
 
     Session session(*env->getString(constant.serverUrl), env->getInt(constant.serverPort));
