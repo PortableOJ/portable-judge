@@ -18,7 +18,8 @@ RUN \
 #  apt -y upgrade && \
   apt -y install gcc g++
 
-ARG BIN_DIR=bin
-WORKDIR ./${BIN_DIR}
+ARG BIN_DIR=/bin
+COPY ./bin ${BIN_DIR}
+WORKDIR ${BIN_DIR}
 
 CMD top
