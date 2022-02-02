@@ -15,7 +15,7 @@ private:
     static Logger *logger;
     Mutex<bool> lock;
 
-    Logger();
+    Logger(string file);
 
     void print(const string &msg, int offset);
 
@@ -55,7 +55,7 @@ public:
 
 Logger *Logger::logger = nullptr;
 
-Logger::Logger() : out("judge.log"), timeStr() {}
+Logger::Logger(string file) : out(file), timeStr() {}
 
 void Logger::print(const string &msg, int offset) {
     for (int i = offset; i < msg.size(); ++i) Logger::out << msg[i];
@@ -108,7 +108,10 @@ void Logger::print(const string &level, const string &msg, const Args &... args)
 }
 
 void Logger::init() {
-    if (logger == nullptr) logger = new Logger();
+    if (logger == nullptr) {
+        const char *logPath = getenv("log");
+        logger = new Logger(logPath == nullptr ? "judge.log" : logPath);
+    }
 }
 
 void Logger::close() {
