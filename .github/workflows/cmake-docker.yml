@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
 jobs:
   build:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -62,5 +58,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
+          context: ${{github.workspace}}
           push: true
           tags: 998244353/portable-judge:latest
