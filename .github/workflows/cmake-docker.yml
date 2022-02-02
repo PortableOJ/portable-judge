@@ -53,10 +53,10 @@ jobs:
         run: mkdir ${{github.workspace}}/bin
 
       - name: File copy main
-        run: cp ${{github.workspace}}/build/main ${{github.workspace}}/bin/main
+        run: cp ${{github.workspace}}/build/main ${{github.workspace}}/portable/main
 
       - name: File copy env
-        run: cp ${{github.workspace}}/env ${{github.workspace}}/bin/env
+        run: cp ${{github.workspace}}/env ${{github.workspace}}/portable/env
 
       # 完成构建镜像并推送
       - name: Build and push

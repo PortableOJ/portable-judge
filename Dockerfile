@@ -13,13 +13,13 @@ MAINTAINER Shiroha "keqing.hu@icloud.com"
 #  ln -s /usr/local/cjudger/venv/py3/bin/python3 /usr/local/cjudger/py3 && \
 #  rm -rf /var/lib/apt/lists/*
 
-RUN \
-  apt update && \
-#  apt -y upgrade && \
-  apt -y install gcc g++
+#RUN \
+#  apt update && \
+##  apt -y upgrade && \
+#  apt -y install gcc g++
 
 ARG BIN_DIR=/portable
-COPY ./bin ${BIN_DIR}
+COPY ./portable ${BIN_DIR}
 WORKDIR ${BIN_DIR}
 
-CMD top
+CMD ./main
