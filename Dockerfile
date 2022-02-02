@@ -18,7 +18,7 @@ RUN \
 #  apt -y upgrade && \
   apt -y install gcc g++
 
-ARG BIN_DIR=/bin
+ARG BIN_DIR=/portable
 COPY ./bin ${BIN_DIR}
 WORKDIR ${BIN_DIR}
 
