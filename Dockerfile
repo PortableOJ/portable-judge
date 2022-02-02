@@ -15,7 +15,7 @@ MAINTAINER Shiroha "keqing.hu@icloud.com"
 
 RUN \
   apt update && \
-  apt -y upgrade && \
+#  apt -y upgrade && \
   apt -y install gcc g++
 
 ARG BIN_DIR=bin
