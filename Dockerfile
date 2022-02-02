@@ -21,4 +21,4 @@ RUN \
 ARG BIN_DIR=bin
 WORKDIR ${BIN_DIR}
 
-CMD ${BIN_DIR}/main
+CMD ./main
