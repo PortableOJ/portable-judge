@@ -33,10 +33,8 @@ bool CppCompiler::trace(int pid) {
 void CppCompiler::toCompile(const path &code, const string &param) {
     rlimit timeLimit{compileMaxTime, compileMaxTime};
     rlimit memLimit{compileMaxMemory, compileMaxMemory};
-    rlimit fileLimit{compileFileSize, compileFileSize};
     setrlimit(RLIMIT_CPU, &timeLimit);
     setrlimit(RLIMIT_AS, &memLimit);
-    setrlimit(RLIMIT_FSIZE, &fileLimit);
 
     path output = code;
     output.replace_extension("");
@@ -44,7 +42,7 @@ void CppCompiler::toCompile(const path &code, const string &param) {
     compileInfo += "CompileInfo.txt";
 
     const char cmd[] = "/usr/bin/g++";
-    const char *const argv[] = {cmd, code.c_str(), "-O2", "-o", output.c_str(), "-Wall", "-lm",
+    const char *const argv[] = {cmd, code.c_str(), "-O2", "-o", output.c_str(), "-w", "-lm",
 #ifdef __linux__
             "--static",
 #endif
