@@ -90,6 +90,7 @@ void TestWork::run() {
 
     /// region 编译
 
+    Logger::debug("Start compile");
     codePath = FileManager::createTestCode(problemId, *language);
     compiler = CompilerFactory::getCompiler(*language);
     runner = RunnerFactory::getRunner(*language);
@@ -105,6 +106,7 @@ void TestWork::run() {
         cm.wait();
         return;
     }
+    Logger::debug("End compile & Start run");
 
     /// endregion
 
@@ -169,6 +171,8 @@ void TestWork::run() {
     }
 
     for (int i = 0; i < testNum; ++i) {
+        Logger::debug("Start run for test: %", i);
+
         cm.reset(1);
         sessionPool->submit(&testTestWork);
         cm.wait();
@@ -252,6 +256,8 @@ void TestWork::run() {
         sessionPool->submit(testOverWork);
         cm.wait();
     }
+
+    Logger::debug("end test work");
 }
 
 void TestWork::clean() const {
