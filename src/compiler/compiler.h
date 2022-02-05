@@ -16,6 +16,7 @@ public:
     static unsigned long compileMaxTime;
     static unsigned long compileRealMaxTime;
     static unsigned long compileMaxMemory;
+    static unsigned long compileFileSize;
 
     static void init();
 
@@ -29,6 +30,7 @@ public:
 unsigned long Compiler::compileMaxTime = 30000 / STD::s;        // s
 unsigned long Compiler::compileRealMaxTime = 60000 / STD::s;    // s
 unsigned long Compiler::compileMaxMemory = 2048 * STD::MB;      // B
+unsigned long Compiler::compileFileSize = 1024 * STD::MB;       // B
 
 bool Compiler::doCmd(const char *cmd, string &res) {
     FILE *pipe = popen(cmd, "r");
@@ -56,7 +58,11 @@ void Compiler::init() {
     }
     tmp = env->getInt(constant.compileMaxMemory);
     if (tmp != 0) {
-        Compiler::compileMaxMemory = tmp / STD::s;
+        Compiler::compileMaxMemory = tmp * STD::MB;
+    }
+    tmp = env->getInt(constant.compileFileSize);
+    if (tmp != 0) {
+        Compiler::compileFileSize = tmp * STD::MB;
     }
 }
 

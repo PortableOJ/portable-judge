@@ -125,17 +125,21 @@ void TestWork::run() {
     SocketWork testReportWork(&testReportOutputRequest, &testOutputCallback, &cm, true);
 
     auto reportResult = [&]() {
-        bool flag = false;
+        testReportOutputRequest.setTestName(testName);
         if (codeRunningResult != JudgeResultEnum::Accept) {
             testReportOutputRequest.setFlag(false);
+            cm.reset(1);
+            sessionPool->submit(&testReportWork);
+            cm.wait();
         } else {
-            testReportOutputRequest.setTestName(testName);
-
             int pos = 0;
             char *buffer = new char[1024];
             int fid = open(testOutPath.c_str(), O_RDONLY);
             if (fid == -1) {
                 testReportOutputRequest.setFlag(false);
+                cm.reset(1);
+                sessionPool->submit(&testReportWork);
+                cm.wait();
             } else {
                 if (Env::ctx()->getBool(constant.localStorage)) {
                     return;
@@ -147,20 +151,11 @@ void TestWork::run() {
                     cm.reset(1);
                     sessionPool->submit(&testReportWork);
                     cm.wait();
-                    flag = true;
+                    pos++;
                 }
                 close(fid);
             }
-            if (!flag) {
-                cm.reset(1);
-                sessionPool->submit(&testReportWork);
-                cm.wait();
-            }
         }
-
-        cm.reset(1);
-        sessionPool->submit(&testReportWork);
-        cm.wait();
     };
 
     // 初始化所有的 pipe

@@ -65,31 +65,31 @@ public:
 Request::Request(const char *m) : method(m) {}
 
 void Request::set(const string &key, const string &value) {
-    data.insert({key, value});
+    data.insert_or_assign(key, value);
 }
 
 void Request::set(const string &key, const char *value) {
-    data.insert({key, value});
+    data.insert_or_assign(key, value);
 }
 
 void Request::set(const string &key, int value) {
-    data.insert({key, to_string(value)});
+    data.insert_or_assign(key, to_string(value));
 }
 
 void Request::set(const string &key, id value) {
-    data.insert({key, to_string(value)});
+    data.insert_or_assign(key, to_string(value));
 }
 
 void Request::set(const string &key, bool value) {
     if (value) {
-        data.insert({key, "true"});
+        data.insert_or_assign(key, "true");
     } else {
-        data.insert({key, "false"});
+        data.insert_or_assign(key, "false");
     }
 }
 
 void Request::setComplex(const string &key, const string &value) {
-    complexData.insert({key, value});
+    complexData.insert_or_assign(key, value);
 }
 
 void Request::send(int socketId) {

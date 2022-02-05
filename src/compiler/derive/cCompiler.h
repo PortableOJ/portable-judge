@@ -33,8 +33,10 @@ bool CCompiler::trace(int pid) {
 void CCompiler::toCompile(const path &code, const string &param) {
     rlimit timeLimit{compileMaxTime, compileMaxTime};
     rlimit memLimit{compileMaxMemory, compileMaxMemory};
+    rlimit fileLimit{compileFileSize, compileFileSize};
     setrlimit(RLIMIT_CPU, &timeLimit);
     setrlimit(RLIMIT_AS, &memLimit);
+    setrlimit(RLIMIT_FSIZE, &fileLimit);
 
     path output = code;
     output.replace_extension("");
