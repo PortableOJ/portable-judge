@@ -97,7 +97,13 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
         exit(1);
     };
 #ifdef __linux__
-    rlimit timeLimit{limitTime, limitTime};
+    /**
+     *  + 1 是为了当程序超时的时候，仅仅越过软条件(soft limit)而没有越过硬条件
+     *  这样目标程序会受到 SIGXCPU 这个信号而不是 SIGKILL 这个信号
+     *
+     *  @see https://man7.org/linux/man-pages/man2/setrlimit.2.html
+     */
+    rlimit timeLimit{limitTime, limitTime + 1};
     rlimit memLimit{limitMemory, limitMemory};
     setrlimit(RLIMIT_CPU, &timeLimit);
     setrlimit(RLIMIT_AS, &memLimit);
