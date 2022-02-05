@@ -92,9 +92,9 @@ int main() {
         sleep(heartbeatTime);
     }
 
-    workPool->close();
-    socketPool->close();
-    threadPool->close();
+    workPool->wait();
+    threadPool->wait();
+    socketPool->wait();
 
     delete workPool;
     delete socketPool;

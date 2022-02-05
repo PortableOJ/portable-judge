@@ -84,4 +84,4 @@ endif ()
 find_package(Threads)
 target_link_libraries(main ${CMAKE_THREAD_LIBS_INIT})
 
-add_definitions(-DDEBUG_LEVEL=0)
+add_definitions(-DDEBUG_LEVEL=2)

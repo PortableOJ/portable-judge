@@ -19,7 +19,7 @@ serverUrl=localhost
 = server 服务器的 port
 serverPort=9090
 = server 的密钥
-serverCode=abc
+serverCode=9ade3a94-6ad0-4aca-8212-8d8c4d9236c6
 ===================编译相关配置=====================
 = 编译逻辑时长上线，对所有语言生效，单位：ms
 compileMaxTime=30000

@@ -66,7 +66,10 @@ void ThreadPool::addThread() {
 void ThreadPool::clean() {
     if (deathThread.get().empty()) return;
     deathThread.run([&](vector<thread *> &data) {
-        for (auto &item: data) delete item;
+        for (auto &item: data) {
+            item->join();
+            delete item;
+        }
     });
 }
 

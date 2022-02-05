@@ -31,23 +31,20 @@
 #include <unordered_map>
 #include <condition_variable>
 
-#ifdef __linux__
-#include <wait.h>
-#endif
-
 #include <fcntl.h>
 #include <netdb.h>
 #include <unistd.h>
-#ifdef __linux__
-#include <seccomp.h>
-#endif
-
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/resource.h>
+
+#ifdef __linux__
+#include <wait.h>
+#include <seccomp.h>
+#endif
 
 using namespace std;
 using namespace std::filesystem;
