@@ -76,6 +76,8 @@ int main() {
                 socketPool->updateCore((int) value);
             } else if (key == constant.workCore) {
                 workPool->updateCore((int) value);
+            } else if (key == constant.cleanProblem) {
+                FileManager::cleanProblem(value);
             }
         }
     });

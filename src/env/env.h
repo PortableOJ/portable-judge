@@ -251,6 +251,7 @@ struct Constant {
     const string threadCore = "threadCore";         // 更新线程池的核心数
     const string socketCore = "socketCore";         // 更新网络连接池的核心数
     const string workCore = "workCore";             // 更新任务池的核心数
+    const string cleanProblem = "cleanProblem";     // 清理问题缓存
 
     /// endregion
 
