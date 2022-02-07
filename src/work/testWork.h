@@ -83,6 +83,7 @@ bool TestWork::init() {
         return false;
     }
     FileManager::createTestDir(problemId);
+    FileManager::checkProblemDir(problemId);
     return true;
 }
 
