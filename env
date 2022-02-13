@@ -12,7 +12,7 @@ home=/root/portable
 = 初始的 TCP 长连接数
 initSocketCore=1
 = 心跳包频率，单位：s
-heartbeatTime=1
+heartbeatTime=5
 ===================server 相关配置=================
 = server 服务器的 url 地址
 serverUrl=localhost

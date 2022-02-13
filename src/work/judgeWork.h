@@ -169,6 +169,7 @@ void JudgeWork::run() {
 
     auto reportResult = [&](int pipeId) {
         solutionTestReportRequest.setSolutionId(solutionId);
+        solutionTestReportRequest.setTestName(testName);
         solutionTestReportRequest.setTimeCost(report.timeCost);
         solutionTestReportRequest.setMemoryCost(report.memoryCost);
         if (resultEnum != JudgeResultEnum::Accept) {

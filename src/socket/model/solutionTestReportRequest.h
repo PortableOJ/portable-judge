@@ -19,6 +19,8 @@ public:
 
     void setMsg(const string &msg);
 
+    void setTestName(const string &testName);
+
     void setTimeCost(unsigned long timeCost);
 
     void setMemoryCost(unsigned long memoryCost);
@@ -34,6 +36,10 @@ void SolutionTestReportRequest::setValue(int value) {
 
 void SolutionTestReportRequest::setSolutionId(id solutionId) {
     this->set(constant.id, solutionId);
+}
+
+void SolutionTestReportRequest::setTestName(const string &testName) {
+    this->set(constant.testName, testName);
 }
 
 void SolutionTestReportRequest::setMsg(const string &msg) {

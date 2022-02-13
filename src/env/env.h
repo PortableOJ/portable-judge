@@ -236,6 +236,7 @@ struct Constant {
     const string judge = "judge";                   // judge
     const string flag = "flag";                     // judge
     const string pos = "pos";                       // type
+    const string testName = "testName";             // testName
     const string timeCost = "timeCost";             // timeCost
     const string memoryCost = "memoryCost";         // memoryCost
 
