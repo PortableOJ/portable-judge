@@ -64,6 +64,9 @@ bool TestWork::init() {
                 string tmp;
                 ss >> tmp;
                 testWork->language = Language::getLanguage(tmp);
+                if (testWork->language == nullptr) {
+                    testWork->fail = true;
+                }
             } else if (key == constant.testNum) {
                 ss >> testWork->testNum;
             } else if (key == constant.timeLimit) {
