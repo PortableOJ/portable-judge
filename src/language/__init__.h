@@ -8,7 +8,7 @@
 #include "language.h"
 
 Language C89("C89", "C", "-std=gnu89", "main", ".c", "");           // NOLINT
-Language C99("C89", "C", "-std=gnu99", "main", ".c", "");           // NOLINT
+Language C99("C99", "C", "-std=gnu99", "main", ".c", "");           // NOLINT
 Language C11("C11", "C", "-std=gnu11", "main", ".c", "");           // NOLINT
 
 Language CPP98("CPP98", "CPP", "-std=c++98", "main", ".cpp", "");   // NOLINT

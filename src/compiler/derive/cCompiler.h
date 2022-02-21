@@ -44,7 +44,7 @@ void CCompiler::toCompile(const path &code, const string &param) {
     compileInfo += "CompileInfo.txt";
 
     const char cmd[] = "/usr/bin/gcc";
-    const char *const argv[] = {cmd, code.c_str(), "-O2", "-o", output.c_str(), "-Wall", "-lm",
+    const char *const argv[] = {cmd, code.c_str(), "-O2", "-o", output.c_str(), "-w", "-lm",
 #ifdef __linux__
             "--static",
 #endif

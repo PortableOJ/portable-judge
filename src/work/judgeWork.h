@@ -75,6 +75,9 @@ bool JudgeWork::init() {
                 string tmp;
                 ss >> tmp;
                 judgeWork->language = Language::getLanguage(tmp);
+                if (judgeWork->language == nullptr) {
+                    judgeWork->resultEnum = JudgeResultEnum::SystemError;
+                }
             } else if (key == constant.judgeName) {
                 ss >> judgeWork->judgeName;
             } else if (key == constant.testNum) {
@@ -169,6 +172,7 @@ void JudgeWork::run() {
 
     auto reportResult = [&](int pipeId) {
         solutionTestReportRequest.setSolutionId(solutionId);
+        solutionTestReportRequest.setTestName(testName);
         solutionTestReportRequest.setTimeCost(report.timeCost);
         solutionTestReportRequest.setMemoryCost(report.memoryCost);
         if (resultEnum != JudgeResultEnum::Accept) {

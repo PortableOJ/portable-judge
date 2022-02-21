@@ -24,6 +24,11 @@ private:
     static ThreadPool *threadPool;
     const static Compiler *cppCompiler;
 
+    /**
+     * 文件系统全局锁
+     */
+    static Mutex<char> fileMutex;
+
     static bool initStandardJudge();
 
 public:
@@ -71,6 +76,8 @@ path FileManager::testPath("test");                       // NOLINT
 SessionPool *FileManager::sessionPool = nullptr;
 ThreadPool *FileManager::threadPool = nullptr;
 const Compiler *FileManager::cppCompiler = nullptr;
+
+Mutex<char> FileManager::fileMutex;
 
 bool FileManager::initStandardJudge() {
     CountMutex cm(0);
@@ -236,20 +243,17 @@ path FileManager::checkJudge(const string &judgeName, id problemId, bool &compil
     if (judgeName == constant.useDiyJudge) {
         path curJudgePath = judgePath / to_string(problemId);
         curJudgePath.replace_extension(Judge.getRunningExtension());
-        if (exists(curJudgePath)) return curJudgePath;
-
-        curJudgePath.replace_extension(Judge.getExtension());
-        CountMutex cm(1);
-        ProblemJudgeCodeRequest request(problemId);
-        Callback callback(curJudgePath, [](void *data) {});
-        auto socketWork = new SocketWork(&request, &callback, &cm);
-        sessionPool->submit(socketWork);
-        cm.wait();
-
-        if (!exists(curJudgePath)) return curJudgePath;
-
-        compileResult = cppCompiler->compile(curJudgePath, Judge.getParams());
-
+        fileMutex.run([&](char &) {
+            if (exists(curJudgePath)) return;
+            curJudgePath.replace_extension(Judge.getExtension());
+            CountMutex cm(1);
+            ProblemJudgeCodeRequest request(problemId);
+            Callback callback(curJudgePath, [](void *data) {});
+            auto socketWork = new SocketWork(&request, &callback, &cm);
+            sessionPool->submit(socketWork);
+            cm.wait();
+            compileResult = cppCompiler->compile(curJudgePath, Judge.getParams());
+        });
         return curJudgePath;
     } else {
         path curJudgePath = judgePath / judgeName;
@@ -261,28 +265,32 @@ path FileManager::checkJudge(const string &judgeName, id problemId, bool &compil
 path FileManager::checkTestDataIn(id problemId, const string &name) {
     path dataIn = problemPath / to_string(problemId) / name;
     dataIn += ".in";
-    if (exists(dataIn)) return dataIn;
+    fileMutex.run([&](char &){
+        if (exists(dataIn)) return;
 
-    CountMutex cm(1);
-    ProblemDataInRequest request(problemId, name);
-    Callback callback(dataIn);
-    auto socketWork = new SocketWork(&request, &callback, &cm);
-    sessionPool->submit(socketWork);
-    cm.wait();
+        CountMutex cm(1);
+        ProblemDataInRequest request(problemId, name);
+        Callback callback(dataIn);
+        auto socketWork = new SocketWork(&request, &callback, &cm);
+        sessionPool->submit(socketWork);
+        cm.wait();
+    });
 
     return dataIn;
 }
 
 path FileManager::checkTestDataOut(id problemId, const string &name) {
     path dataOut = getTestDataOutPath(problemId, name);
-    if (exists(dataOut)) return dataOut;
+    fileMutex.run([&](char &) {
+        if (exists(dataOut)) return;
 
-    CountMutex cm(1);
-    ProblemDataOutRequest request(problemId, name);
-    Callback callback(dataOut);
-    auto socketWork = new SocketWork(&request, &callback, &cm);
-    sessionPool->submit(socketWork);
-    cm.wait();
+        CountMutex cm(1);
+        ProblemDataOutRequest request(problemId, name);
+        Callback callback(dataOut);
+        auto socketWork = new SocketWork(&request, &callback, &cm);
+        sessionPool->submit(socketWork);
+        cm.wait();
+    });
 
     return dataOut;
 }
