@@ -100,7 +100,7 @@ void TestWork::run() {
     runner = RunnerFactory::getRunner(*language);
     fail = !compiler->compile(codePath, language->getParams());
     if (fail) {
-        TestCompileReportRequest testCompileReportRequest(problemId, !fail);
+        TestCompileReportRequest testCompileReportRequest(problemId);
         Callback compileMsgCallback(this, [](void *data, stringstream &ss) {}, [](void *data) {
             ((TestWork *) data)->fail = true;
         });

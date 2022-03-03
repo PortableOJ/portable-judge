@@ -9,15 +9,14 @@
 
 class TestCompileReportRequest : public Request {
 public:
-    TestCompileReportRequest(id problemId, bool result);
+    explicit TestCompileReportRequest(id problemId);
 };
 
 /// region define
 
-TestCompileReportRequest::TestCompileReportRequest(id problemId, bool result)
+TestCompileReportRequest::TestCompileReportRequest(id problemId)
         : Request(Api::TestResultReportRequest) {
     this->set(constant.id, problemId);
-    this->set(constant.value, result);
 }
 
 /// endregion
