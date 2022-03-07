@@ -179,6 +179,7 @@ void JudgeWork::run() {
             solutionTestReportRequest.setValue(static_cast<int>(resultEnum));
         } else if (judgeRunningResult != JudgeResultEnum::Accept) {
             solutionTestReportRequest.setValue(static_cast<int>(JudgeResultEnum::JudgeFail));
+            Logger::trace("Judge fail, judgeResult: %", (int) judgeRunningResult)
         } else if (codeRunningResult != JudgeResultEnum::Accept) {
             solutionTestReportRequest.setValue(static_cast<int>(codeRunningResult));
         } else if (pipeId != -1) {
