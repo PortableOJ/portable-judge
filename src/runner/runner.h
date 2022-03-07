@@ -178,6 +178,7 @@ JudgeResultEnum Runner::trace(int pid, int *error, Report *report) {
             case SIGSYS:
                 return JudgeResultEnum::IllegalSystemCall;
             default:
+                Logger::info("exitCode: %", exitCode);
                 return JudgeResultEnum::RuntimeError;
         }
     }
