@@ -200,12 +200,12 @@ JudgeResultEnum Runner::run(const path &code,
         }
 
         if (output != nullptr && output[1] != -1) {
-            Logger::trace("close %", input[0]);
+            Logger::trace("close %", output[1]);
             close(output[1]);
         }
 
         if (error != nullptr && error[1] != -1) {
-            Logger::trace("close %", input[0]);
+            Logger::trace("close %", error[1]);
             close(error[1]);
         }
 
