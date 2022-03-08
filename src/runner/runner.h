@@ -195,14 +195,17 @@ JudgeResultEnum Runner::run(const path &code,
     } else {
 
         if (input != nullptr && input[0] != -1) {
+            Logger::trace("close %", input[0]);
             close(input[0]);
         }
 
         if (output != nullptr && output[1] != -1) {
+            Logger::trace("close %", input[0]);
             close(output[1]);
         }
 
         if (error != nullptr && error[1] != -1) {
+            Logger::trace("close %", input[0]);
             close(error[1]);
         }
 
