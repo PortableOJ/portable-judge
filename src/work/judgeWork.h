@@ -322,15 +322,8 @@ void JudgeWork::run() {
 
         reportResult(pipes[STD::judgeError][0]);
 
-        for (auto &pipe: pipes) {
-            for (int &pid: pipe) {
-                if (pid != -1) {
-                    Logger::trace("close %", pid);
-                    close(pid);
-                    pid = -1;
-                }
-            }
-        }
+        close(pipes[STD::judgeError][0]);
+
         Logger::trace("Finish for solution: %, stopJudge: %", solutionId, stopJudge);
         if (stopJudge) {
             break;
