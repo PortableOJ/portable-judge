@@ -109,3 +109,33 @@ int main() {
 
     Logger::close();
 }
+
+/*
+Register
+0
+5
+abcde
+0
+
+Append
+0
+0
+
+StandardJudge
+0
+4
+main
+0
+
+StandardJudgeCode
+0
+93
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    cout << "Hello world" << endl;
+}
+0
+*/
