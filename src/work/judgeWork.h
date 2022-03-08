@@ -262,6 +262,17 @@ void JudgeWork::run() {
                     }
                 }
             }
+            Logger::trace("%, open: input: %, %, output: %, %, err: %, %, judge: %, %",
+                          solutionId,
+                          pipes[STD::input][0],
+                          pipes[STD::input][1],
+                          pipes[STD::output][0],
+                          pipes[STD::output][1],
+                          pipes[STD::codeError][0],
+                          pipes[STD::codeError][1],
+                          pipes[STD::judgeError][0],
+                          pipes[STD::judgeError][1]
+            );
 
             resultEnum = JudgeResultEnum::SystemError;
             reportResult(pipes[STD::judgeError][0]);
@@ -271,6 +282,9 @@ void JudgeWork::run() {
         cm.reset(2);
         Task *codeRunningTask = new Task(this, [](void *data) {
             auto judgeWork = (JudgeWork *) data;
+            Logger::trace("%, code run on input: %, %, err: %, %", judgeWork->solutionId,
+                          judgeWork->pipes[STD::input][0], judgeWork->pipes[STD::input][1],
+                          judgeWork->pipes[STD::output][0], judgeWork->pipes[STD::output][1]);
             judgeWork->codeRunningResult = judgeWork->codeRunner->run(judgeWork->codePath,
                                                                       judgeWork->pipes[STD::input],
                                                                       judgeWork->pipes[STD::output],
@@ -284,7 +298,9 @@ void JudgeWork::run() {
         }, &cm);
         Task *judgeRunningTask = new Task(this, [](void *data) {
             auto judgeWork = (JudgeWork *) data;
-            Logger::trace("%, judge run on input: %, %, err: %, %", judgeWork->solutionId, judgeWork->pipes[STD::input][0], judgeWork->pipes[STD::output][1], judgeWork->pipes[STD::judgeError][0], judgeWork->pipes[STD::judgeError][1]);
+            Logger::trace("%, judge run on input: %, %, err: %, %", judgeWork->solutionId,
+                          judgeWork->pipes[STD::output][0], judgeWork->pipes[STD::output][1],
+                          judgeWork->pipes[STD::judgeError][0], judgeWork->pipes[STD::judgeError][1]);
             judgeWork->judgeRunningResult = judgeWork->judgeRunner->run(judgeWork->judgePath,
                                                                         judgeWork->pipes[STD::output],
                                                                         nullptr,
