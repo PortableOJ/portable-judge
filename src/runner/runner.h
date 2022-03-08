@@ -163,6 +163,7 @@ JudgeResultEnum Runner::trace(int pid, int *error, Report *report) {
         int code = readInt(error[0]);
         systemFail = code != 0;
         close(error[0]);
+        Logger::trace("close %", error[0]);
     }
     if (status)
         return exitCode == 0 ? JudgeResultEnum::Accept :

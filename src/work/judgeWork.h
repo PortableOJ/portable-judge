@@ -323,6 +323,7 @@ void JudgeWork::run() {
         reportResult(pipes[STD::judgeError][0]);
 
         close(pipes[STD::judgeError][0]);
+        Logger::trace("close %", pipes[STD::judgeError][0]);
 
         Logger::trace("Finish for solution: %, stopJudge: %", solutionId, stopJudge);
         if (stopJudge) {
