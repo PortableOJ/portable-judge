@@ -284,6 +284,7 @@ void JudgeWork::run() {
         }, &cm);
         Task *judgeRunningTask = new Task(this, [](void *data) {
             auto judgeWork = (JudgeWork *) data;
+            Logger::trace("%, judge run on input: %, %, err: %, %", judgeWork->solutionId, judgeWork->pipes[STD::input][0], judgeWork->pipes[STD::output][1], judgeWork->pipes[STD::judgeError][0], judgeWork->pipes[STD::judgeError][1]);
             judgeWork->judgeRunningResult = judgeWork->judgeRunner->run(judgeWork->judgePath,
                                                                         judgeWork->pipes[STD::output],
                                                                         nullptr,
@@ -294,6 +295,7 @@ void JudgeWork::run() {
                                                                         nullptr,
                                                                         true
             );
+            Logger::trace("% judge finish", judgeWork->solutionId);
         }, &cm);
         threadPool->submit(codeRunningTask);
         threadPool->submit(judgeRunningTask);
@@ -306,6 +308,7 @@ void JudgeWork::run() {
         for (auto &pipe: pipes) {
             for (int &pid: pipe) {
                 if (pid != -1) {
+                    Logger::trace("close %", pid);
                     close(pid);
                     pid = -1;
                 }
