@@ -19,7 +19,8 @@ RUN \
   apt -y install gcc g++
 
 ARG BIN_DIR=/portable
-COPY ./portable ${BIN_DIR}
+COPY ./build/main ${BIN_DIR}/main
+COPY ./env ${BIN_DIR}/env
 WORKDIR ${BIN_DIR}
 
 CMD ./main

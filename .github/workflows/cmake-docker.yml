@@ -49,15 +49,6 @@ jobs:
         # Build your program with the given configuration
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-      - name: Create bin
-        run: mkdir ${{github.workspace}}/portable
-
-      - name: File copy main
-        run: cp ${{github.workspace}}/build/main ${{github.workspace}}/portable/main
-
-      - name: File copy env
-        run: cp ${{github.workspace}}/env ${{github.workspace}}/portable/env
-
       # 完成构建镜像并推送
       - name: Build and push
         uses: docker/build-push-action@v2
