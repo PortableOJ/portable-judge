@@ -63,7 +63,7 @@ public:
 /// region define
 
 bool JudgeWork::init() {
-    Logger::trace("start for solution: % on %", solutionId, (long) this);
+    Logger::trace("start for solution: %", solutionId);
     SolutionInfoRequest solutionInfoRequest(solutionId);
     Callback callback(this, [](void *data, stringstream &ss) {
         auto judgeWork = (JudgeWork *) data;
@@ -283,7 +283,7 @@ void JudgeWork::run() {
         cm.reset(2);
         Task *codeRunningTask = new Task(this, [](void *data) {
             auto judgeWork = (JudgeWork *) data;
-            Logger::trace("%, %, code run on input: %, %, output: %, %", judgeWork->solutionId, (long) judgeWork,
+            Logger::trace("%, code run on input: %, %, output: %, %", judgeWork->solutionId,
                           judgeWork->pipes[STD::input][0], judgeWork->pipes[STD::input][1],
                           judgeWork->pipes[STD::output][0], judgeWork->pipes[STD::output][1]);
             judgeWork->codeRunningResult = judgeWork->codeRunner->run(judgeWork->codePath,
@@ -299,7 +299,7 @@ void JudgeWork::run() {
         }, &cm);
         Task *judgeRunningTask = new Task(this, [](void *data) {
             auto judgeWork = (JudgeWork *) data;
-            Logger::trace("%, %, judge run on input: %, %, err: %, %", judgeWork->solutionId, (long) judgeWork,
+            Logger::trace("%, judge run on input: %, %, err: %, %", judgeWork->solutionId,
                           judgeWork->pipes[STD::output][0], judgeWork->pipes[STD::output][1],
                           judgeWork->pipes[STD::judgeError][0], judgeWork->pipes[STD::judgeError][1]);
             judgeWork->judgeRunningResult = judgeWork->judgeRunner->run(judgeWork->judgePath,
