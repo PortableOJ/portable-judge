@@ -150,7 +150,10 @@ JudgeResultEnum Runner::trace(int pid, int *error, Report *report) {
     int exitCode;
     rusage usage{};
 
-    if (error != nullptr) close(error[1]);
+    if (error != nullptr) {
+        close(error[1]);
+        error[1] = -1;
+    }
 
     bool status = timeoutMutex.wait(pid, maxRunningRealTime, exitCode, &usage);
     if (report != nullptr) {
@@ -197,16 +200,19 @@ JudgeResultEnum Runner::run(const path &code,
         if (input != nullptr && input[0] != -1) {
             Logger::trace("close %", input[0]);
             close(input[0]);
+            input[0] = -1;
         }
 
         if (output != nullptr && output[1] != -1) {
             Logger::trace("close %", output[1]);
             close(output[1]);
+            output[1] = -1;
         }
 
         if (error != nullptr && error[1] != -1) {
             Logger::trace("close %", error[1]);
             close(error[1]);
+            error[1] = -1;
         }
 
         return trace(pid, error, report);

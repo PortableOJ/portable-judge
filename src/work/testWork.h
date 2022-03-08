@@ -158,6 +158,7 @@ void TestWork::run() {
                     pos++;
                 }
                 close(fid);
+                fid = -1;
             }
         }
     };
@@ -231,13 +232,9 @@ void TestWork::run() {
 
 
         reportResult();
-        for (auto &pipe: pipes) {
-            for (int &pid: pipe) {
-                if (pid != -1) {
-                    close(pid);
-                    pid = -1;
-                }
-            }
+
+        if (pipes[STD::codeError][0] != -1) {
+            close(pipes[STD::codeError][0]);
         }
 
         if (fail) {
