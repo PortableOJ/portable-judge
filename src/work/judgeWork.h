@@ -248,11 +248,11 @@ void JudgeWork::run() {
         /// endregion
 
         /// region 运行
-        pipes[STD::input][0] = open(testInPath.c_str(), O_RDONLY);
-        int pip = pipe(pipes[STD::output]);
-        pipe(pipes[STD::codeError]);
-        pipe(pipes[STD::judgeError]);
-        if (pipes[]) {
+
+        if ((pipes[STD::input][0] = open(testInPath.c_str(), O_RDONLY)) == -1
+            || pipe(pipes[STD::output]) == -1
+            || pipe(pipes[STD::codeError]) == -1
+            || pipe(pipes[STD::judgeError]) == -1) {
 
             for (auto &pipe: pipes) {
                 for (int &pid: pipe) {
