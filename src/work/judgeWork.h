@@ -249,10 +249,10 @@ void JudgeWork::run() {
 
         /// region 运行
         pipes[STD::input][0] = open(testInPath.c_str(), O_RDONLY);
-        int pip1 = pipe(pipes[STD::output]);
-        int pip2 = pipe(pipes[STD::codeError]);
-        int pip3 = pipe(pipes[STD::judgeError]);
-        if (pipes[STD::input][0] == -1 || pip1 == -1 || pip2 == -1 || pip3 == -1) {
+        int pip = pipe(pipes[STD::output]);
+        pipe(pipes[STD::codeError]);
+        pipe(pipes[STD::judgeError]);
+        if (pipes[]) {
 
             for (auto &pipe: pipes) {
                 for (int &pid: pipe) {
