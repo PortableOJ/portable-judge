@@ -11,5 +11,6 @@
 #include "mutex.h"
 #include "timeoutMutex.h"
 #include "util.h"
+#include "waitProcess.h"
 
 #endif //JUDGE_UTIL___INIT___H

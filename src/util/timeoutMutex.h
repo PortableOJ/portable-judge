@@ -6,6 +6,7 @@
 #define JUDGE_TIME_MUTEX_H
 
 #include "include.h"
+#include "waitProcess.h"
 
 class TimeoutMutex {
     mutex m;
@@ -26,18 +27,11 @@ bool TimeoutMutex::wait(int pid, unsigned long s, int &code, rusage *rus) {
         if (cv.wait_for(lk, chrono::seconds(s)) == cv_status::timeout) kill(pid, SIGKILL);
     });
 
-    int status;
-    wait4(pid, &status, 0, rus);
+    bool flag = WaitProcess::wait(pid, code, rus);
     cv.notify_all();
     th.join();
-    /**
-     * WIFEXITED 若程序正常执行完成了，则返回非 0
-     * WEXITSTATUS 若程序正常执行完成了，则获取程序退出的值（一般为 0）
-     * WTERMSIG 若程序没有正常执行完成，则获取退出此程序的系统错误
-     */
-    if (WIFEXITED(status) != 0) code = WEXITSTATUS(status);
-    else code = WTERMSIG(status);
-    return WIFEXITED(status) != 0;
+
+    return flag;
 }
 
 /// endregion

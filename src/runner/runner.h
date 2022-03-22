@@ -22,7 +22,7 @@ public:
 
 private:
 
-    static unsigned long maxRunningRealTime;
+//    static unsigned long maxRunningRealTime;
 
     /**
      * 运行代码
@@ -64,13 +64,13 @@ public:
 
 /// region define
 
-unsigned long Runner::maxRunningRealTime = 60000 / STD::s;
+//unsigned long Runner::maxRunningRealTime = 60000 / STD::s;
 
 void Runner::init() {
-    int tmp = Env::ctx()->getInt(constant.runningRealMaxTime);
-    if (tmp != 0) {
-        Runner::maxRunningRealTime = tmp / STD::s;
-    }
+//    int tmp = Env::ctx()->getInt(constant.runningRealMaxTime);
+//    if (tmp != 0) {
+//        Runner::maxRunningRealTime = tmp / STD::s;
+//    }
 }
 
 void Runner::runCode(const path &code, int *input, int *output, int *error,
@@ -155,7 +155,7 @@ JudgeResultEnum Runner::trace(int pid, int *error, Report *report) {
         error[1] = -1;
     }
 
-    bool status = timeoutMutex.wait(pid, maxRunningRealTime, exitCode, &usage);
+    bool status = WaitProcess::wait(pid, exitCode, &usage);
     if (report != nullptr) {
         report->timeCost = usage.ru_utime.tv_sec * 1000 + usage.ru_utime.tv_usec / 1000 +
                            usage.ru_stime.tv_sec * 1000 + usage.ru_stime.tv_usec / 1000;
