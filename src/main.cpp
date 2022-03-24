@@ -71,13 +71,20 @@ int main() {
                 });
                 workPool->submit(task);
             } else if (key == constant.threadCore) {
+                Logger::trace("change thread core to %", value);
                 threadPool->updateCore((int) value);
             } else if (key == constant.socketCore) {
+                Logger::trace("change socket core to %", value);
                 socketPool->updateCore((int) value);
             } else if (key == constant.workCore) {
+                Logger::trace("change work core to %", value);
                 workPool->updateCore((int) value);
             } else if (key == constant.cleanProblem) {
+                Logger::trace("clean problem %", value);
                 FileManager::cleanProblem(value);
+            } else if (key == constant.cleanJudge) {
+                Logger::trace("clean judge %", value);
+                FileManager::cleanProblemJudge(value);
             }
         }
     });

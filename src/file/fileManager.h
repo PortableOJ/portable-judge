@@ -60,6 +60,8 @@ public:
     static void cleanTest(id problemId);
 
     static void cleanProblem(id problemId);
+
+    static void cleanProblemJudge(id problemId);
 };
 
 /// region define
@@ -241,6 +243,7 @@ path FileManager::createTestCode(id problemId, const Language &language) {
 
 path FileManager::checkJudge(const string &judgeName, id problemId, bool &compileResult) {
     if (judgeName == constant.useDiyJudge) {
+        compileResult = true;
         path curJudgePath = judgePath / to_string(problemId);
         curJudgePath.replace_extension(Judge.getRunningExtension());
         fileMutex.run([&](char &) {
@@ -315,6 +318,11 @@ void FileManager::cleanProblem(id problemId) {
     if (localStorage) return;
     path problem = problemPath / to_string(problemId);
     remove_all(problem);
+}
+
+void FileManager::cleanProblemJudge(id problemId) {
+    path curJudgePath = judgePath / to_string(problemId);
+    remove(curJudgePath);
 }
 
 /// endregion

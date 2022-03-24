@@ -108,7 +108,6 @@ void Request::send(int socketId) {
 
     char *tmp = new char[100];
     int headLen = sprintf(tmp, "%s\n%d\n", method, bufferLen);
-    Logger::trace("send request method %, data len: %, data size: %", method, bufferLen, data.size());
     write(socketId, tmp, headLen);
     delete[] tmp;
     for (auto &item: data) {

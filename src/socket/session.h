@@ -55,7 +55,6 @@ Session::Session(string host, int port)
 }
 
 bool Session::send(Request *request, Callback *callback) const {
-    Logger::trace("request send, method: %, socket: %", request->getMethod(), socketId);
     request->send(socketId);
     return callback->exec(socketId);
 }
