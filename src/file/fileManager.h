@@ -315,7 +315,10 @@ void FileManager::cleanTest(id problemId) {
 }
 
 void FileManager::cleanProblem(id problemId) {
-    if (localStorage) return;
+    if (localStorage) {
+        Logger::info("stop clean problem %, because of local", problemId);
+        return;
+    }
     path problem = problemPath / to_string(problemId);
     remove_all(problem);
 }
