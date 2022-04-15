@@ -4,7 +4,7 @@
    <h1>Portable Online Judge</h1>
    <p>一个高性能、分布式、易部署的开源 Online Judge 系统</p>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href='https://github.com/PortableOJ/portable-judge/blob/master/README.md'><img src='https://img.shields.io/badge/all_contributors-0-orange.svg' alt='Contributors'></a>
+<a href='https://github.com/PortableOJ/portable-judge/blob/master/README.md'><img src='https://img.shields.io/badge/all_contributors-1-orange.svg' alt='Contributors'></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
   <a href="/LICENSE"><img src="https://img.shields.io/badge/license-GPL%203.0-blue.svg" alt="GPL 3.0 LICENSE"></a>
   <a href="https://github.com/PortableOJ/portable-judge/actions/"><img src="https://github.com/PortableOJ/portable-judge/actions/workflows/cmake-docker.yml/badge.svg" alt="Build status"></a>
@@ -69,12 +69,17 @@
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
  <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
- <!-- prettier-ignore-start -->
- <!-- markdownlint-disable -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://hukeqing.github.io"><img src="https://avatars.githubusercontent.com/u/47495915?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mauve</b></sub></a><br /><a href="https://github.com/PortableOJ/portable-judge/commits?author=Hukeqing" title="Code">💻</a> <a href="#ideas-Hukeqing" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-Hukeqing" title="Maintenance">🚧</a> <a href="https://github.com/PortableOJ/portable-judge/pulls?q=is%3Apr+reviewed-by%3AHukeqing" title="Reviewed Pull Requests">👀</a></td>
+  </tr>
+</table>
 
- <!-- markdownlint-restore -->
- <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
- <!-- ALL-CONTRIBUTORS-LIST:END -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
