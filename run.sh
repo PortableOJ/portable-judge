@@ -4,7 +4,7 @@ do
     if test -d ${file}
     then
         pushd ${file}/bits
-        sudo g++ -std=c++17 stdc++.h
+        g++ -std=c++17 stdc++.h
         popd
     fi
 done
