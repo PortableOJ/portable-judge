@@ -7,4 +7,4 @@ COPY ./env ${BIN_DIR}/env
 COPY ./run.sh ${BIN_DIR}/run.sh
 WORKDIR ${BIN_DIR}
 
-CMD bash ./run.sh
+CMD ./main
