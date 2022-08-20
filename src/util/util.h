@@ -5,6 +5,8 @@
 #ifndef JUDGE_UTIL_H
 #define JUDGE_UTIL_H
 
+#include "include.h"
+
 int toInt(const string &str) {
     int tmp = 0;
     bool flag = false;

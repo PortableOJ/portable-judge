@@ -29,7 +29,7 @@ void Task::work() {
     func(data);
 }
 
-Task::Task(void *data, function<void(void *)> &&func, CountMutex *cm) : Job(cm), data(data), func(move(func)) {}
+Task::Task(void *data, function<void(void *)> &&func, CountMutex *cm) : Job(cm), data(data), func(std::move(func)) {}
 
 Task::~Task() = default;
 

@@ -73,7 +73,11 @@ add_executable(main
         src/work/__init__.h
         src/work/judgeWork.h
         src/work/testWork.h
-        src/socket/model/testReportOver.h src/util/waitProcess.h)
+
+        src/socket/model/testReportOver.h
+        src/util/waitProcess.h
+        src/http/httplib.h
+        src/http/httpClient.h)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
 
