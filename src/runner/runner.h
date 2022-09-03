@@ -33,7 +33,6 @@ private:
      * @param limitTime 时间限制（s）
      * @param limitMemory 内存限制（B）
      * @param params 额外的参数
-     * @param randomCode 随机数值
      * @param allowOpenFile 是否允许打开文件
      */
     void runCode(const path &code,
@@ -41,23 +40,18 @@ private:
                  unsigned long limitTime, unsigned long limitMemory,
                  const string &params, bool allowOpenFile) const;
 
-    static JudgeResultEnum trace(int pid, int *error, Report *report);
-
 protected:
     virtual void addRule(const path &code, scmp_filter_ctx &ctx, function<void(int)> systemError) const = 0;
 
     virtual void exec(const path &code, const string &params) const = 0;
 
 public:
-    JudgeResultEnum run(const path &code,
-                        int *input,
-                        int *output,
-                        int *error,
-                        unsigned long limitTime,
-                        unsigned long limitMemory,
-                        const string &params,
-                        Report *report = nullptr,
-                        bool allowOpenFile = false) const;
+    int run(const path &code,
+            int *input, int *output, int *error,
+            unsigned long limitTime, unsigned long limitMemory,
+            const string &params, bool allowOpenFile = false) const;
+
+    static JudgeResultEnum trace(int pid, int errorPid, Report *report);
 
     virtual ~Runner() = 0;
 };
@@ -73,7 +67,8 @@ void Runner::init() {
 //    }
 }
 
-void Runner::runCode(const path &code, int *input, int *output, int *error,
+void Runner::runCode(const path &code,
+                     int *input, int *output, int *error,
                      unsigned long limitTime, unsigned long limitMemory,
                      const string &params, bool allowOpenFile) const {
     if (input != nullptr) {
@@ -145,15 +140,13 @@ void Runner::runCode(const path &code, int *input, int *output, int *error,
     ctxFail(-1);
 }
 
-JudgeResultEnum Runner::trace(int pid, int *error, Report *report) {
-    TimeoutMutex timeoutMutex;
+JudgeResultEnum Runner::trace(int pid, int errorPid, Report *report) {
+    if (pid == -1) {
+        return JudgeResultEnum::SystemError;
+    }
+
     int exitCode;
     rusage usage{};
-
-    if (error != nullptr) {
-        close(error[1]);
-        error[1] = -1;
-    }
 
     bool status = WaitProcess::wait(pid, exitCode, &usage);
     if (report != nullptr) {
@@ -162,8 +155,8 @@ JudgeResultEnum Runner::trace(int pid, int *error, Report *report) {
         report->memoryCost = usage.ru_maxrss;
     }
     bool systemFail;
-    if (error != nullptr) {
-        int code = readInt(error[0]);
+    if (errorPid != -1) {
+        int code = readInt(errorPid);
         systemFail = code != 0;
     }
     if (status)
@@ -186,15 +179,14 @@ JudgeResultEnum Runner::trace(int pid, int *error, Report *report) {
     }
 }
 
-JudgeResultEnum Runner::run(const path &code,
+int Runner::run(const path &code,
                             int *input, int *output, int *error,
                             unsigned long limitTime, unsigned long limitMemory,
-                            const string &params,
-                            Report *report, bool allowOpenFile) const {
+                            const string &params, bool allowOpenFile) const {
     int pid = fork();
     if (pid == 0) {
         runCode(code, input, output, error, limitTime, limitMemory, params, allowOpenFile);
-        return JudgeResultEnum::SystemError;
+        return -1;
     } else {
 
         if (input != nullptr && input[0] != -1) {
@@ -212,7 +204,7 @@ JudgeResultEnum Runner::run(const path &code,
             error[1] = -1;
         }
 
-        return trace(pid, error, report);
+        return pid;
     }
 }
 

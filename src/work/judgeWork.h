@@ -43,7 +43,6 @@ private:
     path testInPath;
 
     SessionPool *sessionPool;
-    ThreadPool *threadPool;
 
     int pipes[4][2]{};
 
@@ -55,7 +54,7 @@ private:
 
 public:
 
-    JudgeWork(id solutionId, ThreadPool *tp, SessionPool *sp);
+    JudgeWork(id solutionId, SessionPool *sp);
 
     void start();
 };
@@ -108,25 +107,12 @@ void JudgeWork::run() {
 
     /// region 编译
 
-    cm.reset(2);
     // 获取用户提交和编译用户提交
-    auto codeCompileTask = new Task(this, [](void *data) {
-        auto judgeWork = (JudgeWork *) data;
-        judgeWork->codePath = FileManager::createSolutionCode(judgeWork->solutionId, *judgeWork->language);
-        judgeWork->compiler = CompilerFactory::getCompiler(*judgeWork->language);
-        judgeWork->codeCompileSuccess = judgeWork->compiler->compile(judgeWork->codePath,
-                                                                     judgeWork->language->getParams());
-    }, &cm);
-    auto judgeCompileTask = new Task(this, [](void *data) {
-        auto judgeWork = (JudgeWork *) data;
-        judgeWork->judgePath = FileManager::checkJudge(judgeWork->judgeName, judgeWork->problemId,
-                                                       judgeWork->judgeCompileSuccess);
-    }, &cm);
-    threadPool->submit(codeCompileTask);
-    threadPool->submit(judgeCompileTask);
-    cm.wait();
+    codePath = FileManager::createSolutionCode(solutionId, *language);
+    compiler = CompilerFactory::getCompiler(*language);
+    codeCompileSuccess = compiler->compile(codePath, language->getParams());
+    judgePath = FileManager::checkJudge(judgeName, problemId,judgeCompileSuccess);
 
-    cm.reset(1);
     auto compileMsg = new string;
     compiler->collectCompileInfo(codePath, *compileMsg);
     auto solutionCompileMsgReportRequest = new SolutionCompileMsgReportRequest(
@@ -232,18 +218,8 @@ void JudgeWork::run() {
 
         /// region 获取输入输出数据
 
-        cm.reset(2);
-        Task *testInTask = new Task(this, [](void *data) {
-            auto judgeWork = (JudgeWork *) data;
-            judgeWork->testInPath = FileManager::checkTestDataIn(judgeWork->problemId, judgeWork->testName);
-        }, &cm);
-        Task *testOutTask = new Task(this, [](void *data) {
-            auto judgeWork = (JudgeWork *) data;
-            FileManager::checkTestDataOut(judgeWork->problemId, judgeWork->testName);
-        }, &cm);
-        threadPool->submit(testInTask);
-        threadPool->submit(testOutTask);
-        cm.wait();
+        testInPath = FileManager::checkTestDataIn(problemId, testName);
+        FileManager::checkTestDataOut(problemId, testName);
 
         /// endregion
 
@@ -268,36 +244,18 @@ void JudgeWork::run() {
             return;
         }
 
-        cm.reset(2);
-        Task *codeRunningTask = new Task(this, [](void *data) {
-            auto judgeWork = (JudgeWork *) data;
-            judgeWork->codeRunningResult = judgeWork->codeRunner->run(judgeWork->codePath,
-                                                                      judgeWork->pipes[STD::input],
-                                                                      judgeWork->pipes[STD::output],
-                                                                      judgeWork->pipes[STD::codeError],
-                                                                      judgeWork->timeLimit,
-                                                                      judgeWork->memoryLimit,
-                                                                      "",
-                                                                      &judgeWork->report,
-                                                                      false
-            );
-        }, &cm);
-        Task *judgeRunningTask = new Task(this, [](void *data) {
-            auto judgeWork = (JudgeWork *) data;
-            judgeWork->judgeRunningResult = judgeWork->judgeRunner->run(judgeWork->judgePath,
-                                                                        judgeWork->pipes[STD::output],
-                                                                        nullptr,
-                                                                        judgeWork->pipes[STD::judgeError],
-                                                                        judgeWork->timeLimit,
-                                                                        judgeWork->memoryLimit,
-                                                                        judgeWork->testInPath.string(),
-                                                                        nullptr,
-                                                                        true
-            );
-        }, &cm);
-        threadPool->submit(codeRunningTask);
-        threadPool->submit(judgeRunningTask);
-        cm.wait();
+        int codePid = codeRunner->run(codePath,
+                                      pipes[STD::input], pipes[STD::output], pipes[STD::codeError],
+                                      timeLimit, memoryLimit,
+                                      "", false);
+
+        int judgePid = judgeRunner->run(judgePath,
+                                    pipes[STD::output], nullptr, pipes[STD::judgeError],
+                                    timeLimit, memoryLimit,
+                                    testInPath.string(), true);
+
+        codeRunningResult = Runner::trace(codePid, pipes[STD::codeError][0], &report);
+        judgeRunningResult = Runner::trace(codePid, pipes[STD::judgeError][0], nullptr);
 
         /// endregion
 
@@ -322,13 +280,13 @@ void JudgeWork::clean() const {
     FileManager::cleanSolution(solutionId);
 }
 
-JudgeWork::JudgeWork(id solutionId, ThreadPool *tp, SessionPool *sp)
+JudgeWork::JudgeWork(id solutionId, SessionPool *sp)
         : resultEnum(JudgeResultEnum::Accept), codeCompileSuccess(false), judgeCompileSuccess(false),
           codeRunningResult(JudgeResultEnum::Accept), judgeRunningResult(JudgeResultEnum::Accept),
           report(), stopJudge(false), cm(1), solutionId(solutionId), problemId(0),
           language(nullptr), compiler(nullptr), codeRunner(nullptr), judgeRunner(nullptr),
           judgeName(), testNum(0), timeLimit(0), memoryLimit(0), codePath(), judgePath(),
-          testName(), testInPath(), sessionPool(sp), threadPool(tp) {}
+          testName(), testInPath(), sessionPool(sp) {}
 
 void JudgeWork::start() {
     if (init()) {

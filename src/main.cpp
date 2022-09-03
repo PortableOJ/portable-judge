@@ -34,14 +34,12 @@ int main() {
     Logger::info("Init socket and thread pool, thread: %, socket: %",
                  env->getInt(constant.initThreadCore),
                  env->getInt(constant.initSocketCore));
-    auto *threadPool = new ThreadPool(env->getInt(constant.initThreadCore));
     auto *workPool = new ThreadPool(env->getInt(constant.initWorkCore));
     auto socketPool = new SessionPool(env->getInt(constant.initSocketCore));
-    threadPool->init();
     workPool->init();
     socketPool->init();
     FileManager fileManager;
-    bool fileManagerResult = fileManager.init(socketPool, threadPool);
+    bool fileManagerResult = fileManager.init(socketPool, workPool);
     if (!fileManagerResult) {
         Logger::err("init file manager fail");
         return -1;
@@ -59,20 +57,17 @@ int main() {
             } else if (key == constant.judgeTask) {
                 Logger::trace("add judge job %", value);
                 auto task = new Task((void *) value, [&](void *data) {
-                    JudgeWork judgeWork((id) data, threadPool, socketPool);
+                    JudgeWork judgeWork((id) data, socketPool);
                     judgeWork.start();
                 });
                 workPool->submit(task);
             } else if (key == constant.testTask) {
                 Logger::trace("add test job %", value);
                 auto task = new Task((void *) value, [&](void *data) {
-                    TestWork testWork((id) data, threadPool, socketPool);
+                    TestWork testWork((id) data, socketPool);
                     testWork.start();
                 });
                 workPool->submit(task);
-            } else if (key == constant.threadCore) {
-                Logger::trace("change thread core to %", value);
-                threadPool->updateCore((int) value);
             } else if (key == constant.socketCore) {
                 Logger::trace("change socket core to %", value);
                 socketPool->updateCore((int) value);
@@ -93,7 +88,6 @@ int main() {
 
     while (!terminate) {
         heartbeatCM.reset(1);
-        heartbeatRequest.updateThread(threadPool->getAccumulation());
         heartbeatRequest.updateSocket(socketPool->getAccumulation());
         heartbeatRequest.updateWork(workPool->getAccumulation());
         socketPool->submit(&socketWork);
@@ -102,12 +96,10 @@ int main() {
     }
 
     workPool->wait();
-    threadPool->wait();
     socketPool->wait();
 
     delete workPool;
     delete socketPool;
-    delete threadPool;
 
     auto judgeCode = env->getString(constant.judgeCode);
     delete judgeCode;

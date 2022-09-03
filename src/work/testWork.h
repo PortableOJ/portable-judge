@@ -36,7 +36,6 @@ private:
     int pipes[3][2]{};
 
     SessionPool *sessionPool;
-    ThreadPool *threadPool;
 
     bool init();
 
@@ -45,7 +44,7 @@ private:
     void clean() const;
 
 public:
-    TestWork(id problemId, ThreadPool *tp, SessionPool *sp);
+    TestWork(id problemId, SessionPool *sp);
 
     void start();
 
@@ -182,14 +181,8 @@ void TestWork::run() {
 
         /// region 获取输入输出数据
 
-        cm.reset(1);
-        Task *testInTask = new Task(this, [](void *data) {
-            auto judgeWork = (TestWork *) data;
-            judgeWork->testInPath = FileManager::checkTestDataIn(judgeWork->problemId, judgeWork->testName);
-            judgeWork->testOutPath = FileManager::getTestDataOutPath(judgeWork->problemId, judgeWork->testName);
-        }, &cm);
-        threadPool->submit(testInTask);
-        cm.wait();
+        testInPath = FileManager::checkTestDataIn(problemId, testName);
+        testOutPath = FileManager::getTestDataOutPath(problemId, testName);
 
         /// endregion
 
@@ -213,23 +206,12 @@ void TestWork::run() {
 
         codePath.replace_extension(language->getRunningExtension());
 
-        Task *codeRunTask = new Task(this, [](void *data) {
-            auto testWork = (TestWork *) data;
-            testWork->codeRunningResult = testWork->runner->run(testWork->codePath,
-                                                                testWork->pipes[STD::input],
-                                                                testWork->pipes[STD::output],
-                                                                testWork->pipes[STD::codeError],
-                                                                testWork->timeLimit,
-                                                                testWork->memoryLimit,
-                                                                "",
-                                                                nullptr,
-                                                                false
-            );
-        }, &cm);
-        cm.reset(1);
-        threadPool->submit(codeRunTask);
-        cm.wait();
+        int runPid = runner->run(codePath,
+                    pipes[STD::input], pipes[STD::output], pipes[STD::codeError],
+                    timeLimit, memoryLimit,
+                    "", false);
 
+        codeRunningResult = Runner::trace(runPid, pipes[STD::codeError][0], nullptr);
 
         reportResult();
 
@@ -260,12 +242,11 @@ void TestWork::clean() const {
     FileManager::cleanTest(problemId);
 }
 
-TestWork::TestWork(id problemId, ThreadPool *tp, SessionPool *sp)
+TestWork::TestWork(id problemId, SessionPool *sp)
         : fail(false), codePath(), testName(), codeRunningResult(JudgeResultEnum::Accept),
           cm(1), language(nullptr), compiler(nullptr), runner(nullptr),
           problemId(problemId), testNum(0), timeLimit(0), memoryLimit(0),
-          testInPath(), testOutPath(),
-          threadPool(tp), sessionPool(sp) {
+          testInPath(), testOutPath(), sessionPool(sp) {
 }
 
 void TestWork::start() {
