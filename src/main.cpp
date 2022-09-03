@@ -32,7 +32,7 @@ int main() {
     Logger::info("This Judge Code: %", *env->getString(constant.judgeCode));
 
     Logger::info("Init socket and thread pool, thread: %, socket: %",
-                 env->getInt(constant.initThreadCore),
+                 env->getInt(constant.initWorkCore),
                  env->getInt(constant.initSocketCore));
     auto *workPool = new ThreadPool(env->getInt(constant.initWorkCore));
     auto socketPool = new SessionPool(env->getInt(constant.initSocketCore));

@@ -17,7 +17,6 @@ public:
 RegisterRequest::RegisterRequest() : Request(Api::Register) {
     Env *env = Env::ctx();
     this->set(constant.serverCode, *env->getString(constant.serverCode));
-    this->set(constant.maxThreadCore, env->getInt(constant.initThreadCore));
     this->set(constant.maxSocketCore, env->getInt(constant.initSocketCore));
     this->set(constant.maxWorkCore, env->getInt(constant.initWorkCore));
 }

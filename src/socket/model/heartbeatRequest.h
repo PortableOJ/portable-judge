@@ -11,8 +11,6 @@ class HeartbeatRequest : public Request {
 public:
     HeartbeatRequest();
 
-    void updateThread(int newValue);
-
     void updateSocket(int newValue);
     void updateWork(int newValue);
 };
@@ -20,10 +18,6 @@ public:
 /// region define
 
 HeartbeatRequest::HeartbeatRequest() : Request(Api::Heartbeat) {
-}
-
-void HeartbeatRequest::updateThread(int newValue) {
-    this->set(constant.threadAccumulation, newValue);
 }
 
 void HeartbeatRequest::updateSocket(int newValue) {

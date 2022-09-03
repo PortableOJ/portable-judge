@@ -193,7 +193,6 @@ struct Constant {
 
     /// region env
 
-    const string initThreadCore = "initThreadCore";
     const string initSocketCore = "initSocketCore";
     const string initWorkCore = "initWorkCore";
 
@@ -221,11 +220,9 @@ struct Constant {
 
     const string terminate = "terminate";           // 终止命令
 
-    const string maxThreadCore = "maxThreadCore";           // 最大线程池核心线程数
     const string maxSocketCore = "maxSocketCore";           // 最大网络池核心线程数
     const string maxWorkCore = "maxWorkCore";               // 最大任务池核心线程数
 
-    const string threadAccumulation = "threadAccumulation"; // 线程池堆积
     const string socketAccumulation = "socketAccumulation"; // 连接池堆积
     const string workAccumulation = "workAccumulation";     // 连接池堆积
 
@@ -249,7 +246,6 @@ struct Constant {
 
     const string judgeTask = "judgeTask";           // 一个 judge 任务
     const string testTask = "testTask";             // 一个 test 任务
-    const string threadCore = "threadCore";         // 更新线程池的核心数
     const string socketCore = "socketCore";         // 更新网络连接池的核心数
     const string workCore = "workCore";             // 更新任务池的核心数
     const string cleanProblem = "cleanProblem";     // 清理问题缓存

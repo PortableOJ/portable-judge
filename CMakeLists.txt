@@ -54,6 +54,7 @@ add_executable(main
         src/socket/model/testLibRequest.h
         src/socket/model/testReportOutputRequest.h
         src/socket/model/testCompileReportRequest.h
+        src/socket/model/testReportOver.h
         src/socket/model/testStdCodeRequest.h
         src/socket/model/testTestRequest.h
 
@@ -69,11 +70,11 @@ add_executable(main
         src/util/mutex.h
         src/util/timeoutMutex.h
         src/util/util.h
+        src/util/waitProcess.h
 
         src/work/__init__.h
         src/work/judgeWork.h
-        src/work/testWork.h
-        src/socket/model/testReportOver.h src/util/waitProcess.h)
+        src/work/testWork.h)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
 
